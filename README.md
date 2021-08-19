@@ -5,7 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # Environment variables
 
 The following environment variables are used in this project
-`REACT_APP_INNHOLDSTJENESTE_API_URL=https://api.sandbox.bibs.aws.unit.no/contents
+
 
 ## Available Scripts
 
