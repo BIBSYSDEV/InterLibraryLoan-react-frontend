@@ -785,7 +785,7 @@ Resources:
               Cookies:
                 Forward: none
             TargetOriginId: !Sub
-              - 'S3-${Ill3Bucket}'
+              - 'S3-${IllS3Bucket}'
               - IllS3Bucket: !Ref IllS3Bucket
             ViewerProtocolPolicy: redirect-to-https
             PathPattern: files/*
