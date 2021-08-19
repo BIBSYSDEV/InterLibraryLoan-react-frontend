@@ -1,8 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: CloudFront and Continuous Deployment setup for contents service stack
+Description: CloudFront and Continuous Deployment setup for ill service stack
 
 # Name:
-# Recommended: contents-cloudfront-and-pipeline
+# Recommended: ill-cloudfront-and-pipeline
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -52,7 +52,7 @@ Parameters:
     Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
   GitRepo:
     Type: String
-    Default: BIBSYSDEV/innholdstjeneste-visningsklient
+    Default: BIBSYSDEV/InterLibraryLoan-react-frontend
     Description: Git repository name
   GitBranch:
     Type: String
@@ -79,7 +79,7 @@ Parameters:
       \ \xA7{SubDomainNameWithDot}\xA7{HostedZoneName}. Leave blank for naked (or\
       \ apex and bare) domain. Requires ParentZoneStack parameter!"
     Type: String
-    Default: 'contents.'
+    Default: 'ill.'
   HostedZoneId:
     Description: 'The Route53 hosted zone ID'
     Type: 'AWS::SSM::Parameter::Value<String>'
@@ -91,7 +91,7 @@ Parameters:
   DomainCertificateArn:
     Description: 'The domain certificate ARN'
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/contents/cloudFrontCertificateArn'
+    Default: '/ill/cloudFrontCertificateArn'
   ExistingBucketName:
     Description: '(Optional) The name of an existing S3 bucket, or empty to create a new bucket'
     Type: String
@@ -108,14 +108,14 @@ Conditions:
   IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
 
 Resources:
-  ContentsS3StorageNameParameter:
+  IllS3StorageNameParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: /contents/s3-storage-name
+      Name: /ill/s3-storage-name
       Type: String
       Value: !Join
         - '-'
-        - - 'contents-backend-s3-storage'
+        - - 'ill-backend-s3-storage'
           - '{{resolve:ssm:environment:1}}'
       Description: Name of the S3-bucket to store images and audio files
 
@@ -150,7 +150,7 @@ Resources:
               StorageClass: INTELLIGENT_TIERING
               TransitionInDays: 30
 
-  ContentsS3Bucket:
+  IllS3Bucket:
     Type: AWS::S3::Bucket
     Metadata:
       cfn_nag:
@@ -164,12 +164,12 @@ Resources:
     Properties:
       BucketName: !Join
         - '-'
-        - - 'contents-backend-s3-storage'
+        - - 'ill-backend-s3-storage'
           - '{{resolve:ssm:environment:1}}'
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
 
-  ContentsS3BucketPolicy:
+  IllS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       PolicyDocument:
@@ -184,9 +184,9 @@ Resources:
             Resource: !Join
               - ''
               - - 'arn:aws:s3:::'
-                - !Ref ContentsS3Bucket
+                - !Ref IllS3Bucket
                 - /*
-      Bucket: !Ref ContentsS3Bucket
+      Bucket: !Ref IllS3Bucket
 
   PipelineApprovalTopic:
     Type: AWS::SNS::Topic
@@ -420,10 +420,6 @@ Resources:
         EnvironmentVariables:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
-          - Name: REACT_APP_INNHOLDSTJENESTE_API_URL
-            Value: 'https://{{resolve:ssm:/api/domainName:1}}/contents'
-          - Name: REACT_APP_INNHOLDSTJENESTE_FILES_URL
-            Value: !Sub 'https://${RecordSet}/'
       Name: !Sub '${AWS::StackName}-build'
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
@@ -505,7 +501,7 @@ Resources:
                     "HostedZoneId": "/hostedzone/id",
                     "HostedZoneName": "/hostedzone/name",
                     "SubDomainNameWithDot": "${SubDomainNameWithDot}",
-                    "DomainCertificateArn": "/contents/cloudFrontCertificateArn",
+                    "DomainCertificateArn": "/ill/cloudFrontCertificateArn",
                     "ExistingBucketName": "${ExistingBucketName}"
                   }
               InputArtifacts:
@@ -789,8 +785,8 @@ Resources:
               Cookies:
                 Forward: none
             TargetOriginId: !Sub
-              - 'S3-${ContentsS3Bucket}'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
+              - 'S3-${Ill3Bucket}'
+              - IllS3Bucket: !Ref IllS3Bucket
             ViewerProtocolPolicy: redirect-to-https
             PathPattern: files/*
         DefaultRootObject: 'index.html'
@@ -832,11 +828,11 @@ Resources:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
           #            OriginPath: /timestamp # TODO
           - DomainName: !Sub
-              - '${ContentsS3Bucket}.s3.${AWS::Region}.amazonaws.com'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
+              - '${IllS3Bucket}.s3.${AWS::Region}.amazonaws.com'
+              - IllS3Bucket: !Ref IllS3Bucket
             Id: !Sub
-              - 'S3-${ContentsS3Bucket}'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
+              - 'S3-${IllS3Bucket}'
+              - IllS3Bucket: !Ref IllS3Bucket
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
               #OriginPath: /timestamp # TODO
