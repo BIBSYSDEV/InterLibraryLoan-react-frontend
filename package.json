@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "prepare": "husky install",
     "eject": "react-scripts eject",
     "test:cypress": "REACT_APP_USE_MOCK=true start-server-and-test http://localhost:3000",
     "test": "cypress run",
