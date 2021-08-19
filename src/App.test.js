@@ -3,6 +3,6 @@ import App from './App';
 
 test('it renders', () => {
   render(<App />);
-  const headerElement = screen.getByText(/Resource not found/i);
+  const headerElement = screen.getByText(/Welkommen Erling/i);
   expect(headerElement).toBeInTheDocument();
 });
