@@ -762,33 +762,6 @@ Resources:
             - 'S3-${WebsiteBucketName}'
             - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
           ViewerProtocolPolicy: redirect-to-https
-        CacheBehaviors:
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${WebsiteBucketName}'
-              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: content/*
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${IllS3Bucket}'
-              - IllS3Bucket: !Ref IllS3Bucket
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: files/*
         DefaultRootObject: 'index.html'
         PriceClass: PriceClass_100
         Restrictions:
@@ -827,15 +800,6 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
           #            OriginPath: /timestamp # TODO
-          - DomainName: !Sub
-              - '${IllS3Bucket}.s3.${AWS::Region}.amazonaws.com'
-              - IllS3Bucket: !Ref IllS3Bucket
-            Id: !Sub
-              - 'S3-${IllS3Bucket}'
-              - IllS3Bucket: !Ref IllS3Bucket
-            S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
-              #OriginPath: /timestamp # TODO
 
   CloudFrontAccessLogsBucket:
     Type: AWS::S3::Bucket
