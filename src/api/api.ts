@@ -7,8 +7,7 @@ setAxiosDefaults();
 
 export const getMetadata = (id: string): Promise<AxiosResponse<MetaData>> => {
   return Axios({
-    url: encodeURI(API_PATHS.metadataPath),
-    method: 'POST',
-    data: encodeURI(`identifier=${id}`),
+    url: encodeURI(`${API_PATHS.metadataPath}?id=${id}`),
+    method: 'GET',
   });
 };

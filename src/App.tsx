@@ -34,7 +34,7 @@ const App = () => {
         setIsLoadingMetaData(false);
       }
     };
-    fetchMetadata();
+    fetchMetadata().then();
   }, []);
 
   return (

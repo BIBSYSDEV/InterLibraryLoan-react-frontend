@@ -1,28 +1,18 @@
 import MockAdapter from 'axios-mock-adapter';
-import Axios, { AxiosRequestConfig } from 'axios';
+import Axios from 'axios';
+import { API_PATHS } from '../utils/constants';
 
-export const intercetRequestOnMock = () => {
+const mockMetadata = {
+  title: 'Sample Title',
+  creator: 'Per Arne Ytrebjarne',
+  standardNumber: '9788276662665',
+};
+
+export const interceptRequestsOnMock = () => {
   const mock = new MockAdapter(Axios);
 
-  const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
-    mock.onGet(new RegExp(pathPattern)).reply((config) => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(loggedReply(config, statusCode, mockedResponse));
-        }, delay);
-      });
-    });
-  };
-
-  const loggedReply = (config: AxiosRequestConfig, statusCode: number, mockedResult: unknown) => {
-    /* eslint-disable no-console */
-    console.log('MOCKED API-CALL: ', config.url);
-    //console.log('MOCKED API-CALL: ', config, statusCode, mockedResult);
-    return [statusCode, mockedResult];
-  };
-
-  /*
-  Sample mock:
-   mock.onGet(new RegExp('textfilepath')).reply(200, mockText);
-   */
+  mock.onGet(new RegExp(`${API_PATHS.metadataPath}.*`)).reply(200, mockMetadata);
+  mock.onAny().reply(function (config) {
+    throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);
+  });
 };
