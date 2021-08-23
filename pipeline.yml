@@ -10,8 +10,8 @@ Metadata:
       - Label:
           default: Git Settings
         Parameters:
-          - GitRepo
-          - GitBranch
+          - GitHubRepo
+          - GitHubBranch
       - Label:
           default: Pipeline approval
         Parameters:
@@ -28,9 +28,9 @@ Metadata:
           - HostedZoneName
           - SubDomainNameWithDot
     ParameterLabels:
-      GitRepo:
+      GitHubRepo:
         default: Git Repo
-      GitBranch:
+      GitHubBranch:
         default: Git Branch
       PipelineApprovalAction:
         default: Approval action
@@ -46,15 +46,22 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
+  GitHubOAuthToken:
+    Description: OAuth token used by AWS CodePipeline to connect to GitHub
+    NoEcho: true
+    Type: String
   CodeStarConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
     Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
-  GitRepo:
+  GitHubOwner:
+    Description: GitHub username owning the repo
+    Type: String
+  GitHubRepo:
     Type: String
     Default: BIBSYSDEV/InterLibraryLoan-react-frontend
     Description: Git repository name
-  GitBranch:
+  GitHubBranch:
     Type: String
     Default: develop
     Description: Git repository branch
@@ -450,15 +457,17 @@ Resources:
             - Name: Source
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: '1'
-                Provider: CodeStarSourceConnection
+                Provider: Github
               Configuration:
-                ConnectionArn: !Ref CodeStarConnectionArn
-                FullRepositoryId: !Ref GitRepo
-                BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
-              OutputArtifacts: [Name: SourceArtifacts]
+                Owner: !Ref GitHubOwner
+                OAuthToken: !Ref GitHubOAuthToken
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                PollForSourceChanges: true
+              OutputArtifacts:
+                - Name: SourceArtifact
               Namespace: SourceVariables
               RunOrder: 1
         - Name: Build
@@ -493,8 +502,8 @@ Resources:
                 ParameterOverrides: !Sub |
                   {
                     "CodeStarConnectionArn": "/github-connection",
-                    "GitRepo": "${GitRepo}",
-                    "GitBranch": "${GitBranch}",
+                    "GitHubRepo": "${GitHubRepo}",
+                    "GitHubBranch": "${GitHubBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
                     "PipelineApprovalEmail": "${PipelineApprovalEmail}",
                     "AlertTopicArn": "/alert/topicArn",
