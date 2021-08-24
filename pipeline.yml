@@ -463,7 +463,7 @@ Resources:
                 OAuthToken: !Ref GitHubOAuthToken
                 Repo: !Ref GitHubRepo
                 Branch: !Ref GitHubBranch
-                PollForSourceChanges: true
+                PollForSourceChanges: false
               OutputArtifacts:
                 - Name: SourceArtifact
               Namespace: SourceVariables
