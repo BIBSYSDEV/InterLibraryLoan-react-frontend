@@ -19,8 +19,7 @@ export const StyledFullPageProgressWrapper = styled.div`
 
 export const PageWrapper = styled.div`
   padding: 0;
-  margin-top: 1rem;
-  margin-left: 1rem;
+  margin: 1rem;
   word-break: break-word;
 `;
 
