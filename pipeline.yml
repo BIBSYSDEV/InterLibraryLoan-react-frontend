@@ -440,9 +440,6 @@ Resources:
             - Type: BASE_REF
               Pattern: ^refs/heads/main$
               ExcludeMatchedPattern: false
-            - Type: ACTOR_ACCOUNT_ID
-              Pattern: 12345
-              ExcludeMatchedPattern: true
           - - Type: EVENT
               Pattern: PUSH
             - Type: HEAD_REF
@@ -507,7 +504,7 @@ Resources:
                 - Name: SourceArtifacts
               OutputArtifacts:
                 - Name: BuildArtifacts
-              RunOrder: 1
+              RunOrder: 2
         - Name: UpdatePipeline
           Actions:
             - Name: DeployPipeline
@@ -538,7 +535,7 @@ Resources:
                   }
               InputArtifacts:
                 - Name: SourceArtifacts
-              RunOrder: 1
+              RunOrder: 2
         - Name: Release
           Actions:
             - !If
@@ -553,7 +550,7 @@ Resources:
                   NotificationArn: !Ref PipelineApprovalTopic
                   CustomData: !Sub 'A new release is ready for the ${AWS::StackName} stack in account ${AWS::AccountId}. Commit message: "#{SourceVariables.CommitMessage}". Do you want to deploy the changes?'
                   ExternalEntityLink: 'https://aws.unit.no'
-                RunOrder: 1
+                RunOrder: 2
               - !Ref AWS::NoValue
             - Name: CopyApplicationtoS3
               ActionTypeId:
