@@ -432,31 +432,7 @@ Resources:
       Name: !Sub '${AWS::StackName}-build'
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
-        Type: GITHUB
-        Location: BIBSYSDEV/InterLibraryLoan-react-frontend
-      Triggers:
-        Webhook: true
-        FilterGroups:
-          - - Type: EVENT
-              Pattern: PULL_REQUEST_CREATED,PULL_REQUEST_UPDATED
-            - Type: BASE_REF
-              Pattern: ^refs/heads/main$
-              ExcludeMatchedPattern: false
-          - - Type: EVENT
-              Pattern: PUSH
-            - Type: HEAD_REF
-              Pattern: ^refs/heads/.*
-            - Type: FILE_PATH
-              Pattern: READ_ME
-              ExcludeMatchedPattern: true
-          - - Type: EVENT
-              Pattern: PUSH
-            - Type: COMMIT_MESSAGE
-              Pattern: \[CodeBuild\]
-      TimeoutInMinutes: 30
-      Cache:
-        Type: S3
-        Location: !Sub '${ArtifactsBucket}/codebuildcache'
+        Type: CODEPIPELINE
 
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
