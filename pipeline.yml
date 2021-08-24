@@ -57,6 +57,7 @@ Parameters:
   GitHubOwner:
     Description: GitHub username owning the repo
     Type: String
+    Default: BIBSYSDEV
   GitHubRepo:
     Type: String
     Default: BIBSYSDEV/InterLibraryLoan-react-frontend
