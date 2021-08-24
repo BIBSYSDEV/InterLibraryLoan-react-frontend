@@ -61,7 +61,7 @@ Parameters:
     Default: BIBSYSDEV
   GitHubRepo:
     Type: String
-    Default: BIBSYSDEV/InterLibraryLoan-react-frontend
+    Default: InterLibraryLoan-react-frontend
     Description: Git repository name
   GitHubBranch:
     Type: String
