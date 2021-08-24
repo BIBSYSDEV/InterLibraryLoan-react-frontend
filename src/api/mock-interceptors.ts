@@ -4,7 +4,7 @@ import { API_PATHS } from '../utils/constants';
 
 export const mockMetadata = {
   title: 'Sample Title',
-  creator: 'Per Arne Ytrebjarne',
+  creator: 'Per Bjarne Ytre-Arne',
   standardNumber: '9788276662665',
   year: '1974',
   publicationPlace: 'Trondheim',
