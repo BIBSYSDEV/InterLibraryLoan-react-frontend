@@ -938,17 +938,3 @@ Outputs:
   ArtifactsBucket:
     Description: The artifacts bucket
     Value: !Ref ArtifactsBucket
-
-  PublishVersionPipelineWebhook:
-    Type: AWS::CodePipeline::Webhook
-    Properties:
-      Authentication: GITHUB_HMAC
-      AuthenticationConfiguration:
-        SecretToken: !Ref GitHubOAuthToken
-      Filters:
-        - JsonPath: '$.action'
-          MatchEquals: released
-      TargetPipeline: !Ref Pipeline
-      TargetAction: GitHubSource
-      TargetPipelineVersion: !GetAtt Pipeline.Version
-      RegisterWithThirdParty: true
