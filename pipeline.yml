@@ -488,7 +488,7 @@ Resources:
             - Name: DeployPipeline
               ActionTypeId:
                 Category: Deploy
-                Owner: ThirdParty
+                Owner: ASW
                 Provider: CloudFormation
                 Version: '1'
               Configuration:
