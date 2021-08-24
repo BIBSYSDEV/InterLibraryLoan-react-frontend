@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { MetaData } from '../types/app.types';
 
-const StyledRow = styled(Typography)`
+const StyledRow = styled.div`
   display: flex;
 `;
 const StyledMetadataHolder = styled.div`
@@ -11,7 +11,6 @@ const StyledMetadataHolder = styled.div`
 `;
 
 const StyledLabel = styled(Typography)`
-  flex: 1 1 100%;
   min-width: 12rem;
   max-width: 25%;
   box-sizing: border-box;
@@ -39,7 +38,7 @@ interface MetadataHolderProps {
 }
 
 const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
-  <StyledMetadataHolder>
+  <StyledMetadataHolder data-testid="metaData">
     <MetadataLine label={'Title'} value={metaData.title} />
     {metaData.creator && <MetadataLine label={'Creator'} value={metaData.creator} />}
     {metaData.standardNumber && <MetadataLine label={'Standard number'} value={metaData.standardNumber} />}

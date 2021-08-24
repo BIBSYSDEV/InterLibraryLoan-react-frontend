@@ -18,14 +18,14 @@ export const StyledFullPageProgressWrapper = styled.div`
 `;
 
 export const PageWrapper = styled.div`
-  width: 100%
   padding: 0;
-  margin: 1rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  word-break: break-word;
 `;
 
 export const StyledPageTitleTypography = styled(Typography)`
   width: 100%;
-  padding: 1rem;
 `;
 
 const AppContent = () => {

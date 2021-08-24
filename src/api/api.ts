@@ -5,9 +5,9 @@ import { MetaData } from '../types/app.types';
 
 setAxiosDefaults();
 
-export const getMetadata = (id: string): Promise<AxiosResponse<MetaData>> => {
+export const getMetadata = (recordId: string): Promise<AxiosResponse<MetaData>> => {
   return Axios({
-    url: encodeURI(`${API_PATHS.metadataPath}?id=${id}`),
+    url: encodeURI(`${API_PATHS.metadataPath}?recordid=${recordId}`),
     method: 'GET',
   });
 };

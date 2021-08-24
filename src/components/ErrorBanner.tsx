@@ -14,7 +14,7 @@ interface ErrorBannerProps {
 
 const ErrorBanner: FC<ErrorBannerProps> = ({ error }) => {
   return (
-    <StyledAlert severity="error">
+    <StyledAlert severity="error" data-testid="alert">
       <AlertTitle>En feil har oppstått</AlertTitle>
       {error && <Typography variant="caption">( Feilmelding: {error.message})</Typography>}
     </StyledAlert>
