@@ -128,6 +128,20 @@ Resources:
           - '{{resolve:ssm:environment:1}}'
       Description: Name of the S3-bucket to store images and audio files
 
+  PublishVersionPipelineWebhook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubOAuthToken
+      Filters:
+        - JsonPath: '$.action'
+          MatchEquals: released
+      TargetPipeline: !Ref Pipeline
+      TargetAction: GitHubSource
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: true
+
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
     Metadata:
