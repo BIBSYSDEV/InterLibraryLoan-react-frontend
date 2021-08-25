@@ -496,7 +496,7 @@ Resources:
                 RoleArn: !GetAtt 'CloudFormationRole.Arn'
                 StackName: !Ref 'AWS::StackName'
                 Capabilities: CAPABILITY_IAM
-                TemplatePath: 'SourceArtifacts::pipeline.yml'
+                TemplatePath: 'SourceArtifact::pipeline.yml'
                 ParameterOverrides: !Sub |
                   {
                     "CodeStarConnectionArn": "/github-connection",
