@@ -133,7 +133,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+        SecretToken: !Ref GitHubOAuthToken
       Filters:
         - JsonPath: '$.action'
           MatchEquals: released
