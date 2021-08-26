@@ -1,15 +1,79 @@
-import React from 'react';
-import { Route, Switch } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
-import AppContent from './AppContent';
+import React, { useEffect, useState } from 'react';
+import { CircularProgress, Typography } from '@material-ui/core';
+import { getMetadata } from './api/api';
+import ErrorBanner from './components/ErrorBanner';
+import styled from 'styled-components';
+import { MetaData } from './types/app.types';
+import MetadataHolder from './components/MetadataPresentation';
+
+export const StyledFullPageProgressWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const PageWrapper = styled.div`
+  padding: 0;
+  margin: 1rem;
+  word-break: break-word;
+`;
+
+export const StyledPageTitleTypography = styled(Typography)`
+  width: 100%;
+`;
 
 const App = () => {
+  const query = new URLSearchParams(window.location.search);
+  const recordId = query.get('recordid');
+  // const patronId = query.get('patronid');
+  // const vId = query.get('vid');
+  const [metaData, setMetaData] = useState<MetaData>();
+  const [isLoadingMetaData, setIsLoadingMetaData] = useState(false);
+  const [isMissingRecordId, setIsMissingRecordId] = useState(false);
+  const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      if (recordId) {
+        try {
+          setIsLoadingMetaData(true);
+          setFetchMetaDataError(undefined);
+          recordId && setMetaData((await getMetadata(recordId)).data);
+        } catch (error) {
+          setFetchMetaDataError(error);
+        } finally {
+          setIsLoadingMetaData(false);
+        }
+      } else {
+        setIsMissingRecordId(true);
+      }
+    };
+    fetchMetadata().then();
+  }, [recordId]);
+
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="*" component={AppContent} />
-      </Switch>
-    </BrowserRouter>
+    <>
+      {!isLoadingMetaData ? (
+        metaData && (
+          <PageWrapper>
+            <Typography variant="h1" gutterBottom>
+              Use this form to send ILL-request using NCIP
+            </Typography>
+            <MetadataHolder metaData={metaData} />
+          </PageWrapper>
+        )
+      ) : (
+        <StyledFullPageProgressWrapper>
+          <CircularProgress />
+        </StyledFullPageProgressWrapper>
+      )}
+      {fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}
+      {isMissingRecordId && <ErrorBanner error={new Error('URL is missing parameter "recordid"')} />}
+    </>
   );
 };
 
