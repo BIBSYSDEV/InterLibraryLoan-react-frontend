@@ -10,8 +10,8 @@ Metadata:
       - Label:
           default: Git Settings
         Parameters:
-          - GitRepo
-          - GitBranch
+          - GitHubRepo
+          - GitHubBranch
       - Label:
           default: Pipeline approval
         Parameters:
@@ -28,9 +28,9 @@ Metadata:
           - HostedZoneName
           - SubDomainNameWithDot
     ParameterLabels:
-      GitRepo:
+      GitHubRepo:
         default: Git Repo
-      GitBranch:
+      GitHubBranch:
         default: Git Branch
       PipelineApprovalAction:
         default: Approval action
@@ -46,15 +46,24 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
+  GitHubOAuthToken:
+    Description: OAuth token used by AWS CodePipeline to connect to GitHub
+    NoEcho: true
+    Type: String
+    Default: '{{resolve:secretsmanager:githubtoken:SecretString}}'
   CodeStarConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
     Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
-  GitRepo:
+  GitHubOwner:
+    Description: GitHub username owning the repo
     Type: String
-    Default: BIBSYSDEV/InterLibraryLoan-react-frontend
+    Default: BIBSYSDEV
+  GitHubRepo:
+    Type: String
+    Default: InterLibraryLoan-react-frontend
     Description: Git repository name
-  GitBranch:
+  GitHubBranch:
     Type: String
     Default: develop
     Description: Git repository branch
@@ -118,6 +127,20 @@ Resources:
         - - 'ill-backend-s3-storage'
           - '{{resolve:ssm:environment:1}}'
       Description: Name of the S3-bucket to store images and audio files
+
+  PublishVersionPipelineWebhook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+      Filters:
+        - JsonPath: '$.action'
+          MatchEquals: released
+      TargetPipeline: !Ref Pipeline
+      TargetAction: GitHubSource
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: true
 
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
@@ -424,10 +447,6 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
-      TimeoutInMinutes: 30
-      Cache:
-        Type: S3
-        Location: !Sub '${ArtifactsBucket}/codebuildcache'
 
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -447,18 +466,20 @@ Resources:
       Stages:
         - Name: Source
           Actions:
-            - Name: Source
+            - Name: GitHubSource
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: '1'
-                Provider: CodeStarSourceConnection
+                Provider: GitHub
               Configuration:
-                ConnectionArn: !Ref CodeStarConnectionArn
-                FullRepositoryId: !Ref GitRepo
-                BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
-              OutputArtifacts: [Name: SourceArtifacts]
+                Owner: !Ref GitHubOwner
+                OAuthToken: !Ref GitHubOAuthToken
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                PollForSourceChanges: false
+              OutputArtifacts:
+                - Name: SourceArtifact
               Namespace: SourceVariables
               RunOrder: 1
         - Name: Build
@@ -472,7 +493,7 @@ Resources:
               Configuration:
                 ProjectName: !Ref CodeBuildProject
               InputArtifacts:
-                - Name: SourceArtifacts
+                - Name: SourceArtifact
               OutputArtifacts:
                 - Name: BuildArtifacts
               RunOrder: 1
@@ -489,12 +510,12 @@ Resources:
                 RoleArn: !GetAtt 'CloudFormationRole.Arn'
                 StackName: !Ref 'AWS::StackName'
                 Capabilities: CAPABILITY_IAM
-                TemplatePath: 'SourceArtifacts::pipeline.yml'
+                TemplatePath: 'SourceArtifact::pipeline.yml'
                 ParameterOverrides: !Sub |
                   {
                     "CodeStarConnectionArn": "/github-connection",
-                    "GitRepo": "${GitRepo}",
-                    "GitBranch": "${GitBranch}",
+                    "GitHubRepo": "${GitHubRepo}",
+                    "GitHubBranch": "${GitHubBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
                     "PipelineApprovalEmail": "${PipelineApprovalEmail}",
                     "AlertTopicArn": "/alert/topicArn",
@@ -505,7 +526,7 @@ Resources:
                     "ExistingBucketName": "${ExistingBucketName}"
                   }
               InputArtifacts:
-                - Name: SourceArtifacts
+                - Name: SourceArtifact
               RunOrder: 1
         - Name: Release
           Actions:
@@ -762,33 +783,6 @@ Resources:
             - 'S3-${WebsiteBucketName}'
             - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
           ViewerProtocolPolicy: redirect-to-https
-        CacheBehaviors:
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${WebsiteBucketName}'
-              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: content/*
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${IllS3Bucket}'
-              - IllS3Bucket: !Ref IllS3Bucket
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: files/*
         DefaultRootObject: 'index.html'
         PriceClass: PriceClass_100
         Restrictions:
@@ -827,15 +821,6 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
           #            OriginPath: /timestamp # TODO
-          - DomainName: !Sub
-              - '${IllS3Bucket}.s3.${AWS::Region}.amazonaws.com'
-              - IllS3Bucket: !Ref IllS3Bucket
-            Id: !Sub
-              - 'S3-${IllS3Bucket}'
-              - IllS3Bucket: !Ref IllS3Bucket
-            S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
-              #OriginPath: /timestamp # TODO
 
   CloudFrontAccessLogsBucket:
     Type: AWS::S3::Bucket
