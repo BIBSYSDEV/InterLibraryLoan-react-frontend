@@ -10,8 +10,8 @@ Metadata:
       - Label:
           default: Git Settings
         Parameters:
-          - GitHubRepo
-          - GitHubBranch
+          - GitRepo
+          - GitBranch
       - Label:
           default: Pipeline approval
         Parameters:
@@ -28,9 +28,9 @@ Metadata:
           - HostedZoneName
           - SubDomainNameWithDot
     ParameterLabels:
-      GitHubRepo:
+      GitRepo:
         default: Git Repo
-      GitHubBranch:
+      GitBranch:
         default: Git Branch
       PipelineApprovalAction:
         default: Approval action
@@ -46,24 +46,15 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
-  GitHubOAuthToken:
-    Description: OAuth token used by AWS CodePipeline to connect to GitHub
-    NoEcho: true
-    Type: String
-    Default: '{{resolve:secretsmanager:githubtoken:SecretString}}'
   CodeStarConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
     Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
-  GitHubOwner:
-    Description: GitHub username owning the repo
+  GitRepo:
     Type: String
-    Default: BIBSYSDEV
-  GitHubRepo:
-    Type: String
-    Default: InterLibraryLoan-react-frontend
+    Default: BIBSYSDEV/InterLibraryLoan-react-frontend
     Description: Git repository name
-  GitHubBranch:
+  GitBranch:
     Type: String
     Default: develop
     Description: Git repository branch
@@ -127,20 +118,6 @@ Resources:
         - - 'ill-backend-s3-storage'
           - '{{resolve:ssm:environment:1}}'
       Description: Name of the S3-bucket to store images and audio files
-
-  PublishVersionPipelineWebhook:
-    Type: AWS::CodePipeline::Webhook
-    Properties:
-      Authentication: GITHUB_HMAC
-      AuthenticationConfiguration:
-        SecretToken: '{{resolve:secretsmanager:githubtoken:SecretString}}'
-      Filters:
-        - JsonPath: '$.action'
-          MatchEquals: released
-      TargetPipeline: !Ref Pipeline
-      TargetAction: GitHubSource
-      TargetPipelineVersion: !GetAtt Pipeline.Version
-      RegisterWithThirdParty: true
 
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
@@ -447,6 +424,10 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
+      TimeoutInMinutes: 30
+      Cache:
+        Type: S3
+        Location: !Sub '${ArtifactsBucket}/codebuildcache'
 
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -466,20 +447,18 @@ Resources:
       Stages:
         - Name: Source
           Actions:
-            - Name: GitHubSource
+            - Name: Source
               ActionTypeId:
                 Category: Source
-                Owner: ThirdParty
+                Owner: AWS
                 Version: '1'
-                Provider: GitHub
+                Provider: CodeStarSourceConnection
               Configuration:
-                Owner: !Ref GitHubOwner
-                OAuthToken: !Ref GitHubOAuthToken
-                Repo: !Ref GitHubRepo
-                Branch: !Ref GitHubBranch
-                PollForSourceChanges: false
-              OutputArtifacts:
-                - Name: SourceArtifact
+                ConnectionArn: !Ref CodeStarConnectionArn
+                FullRepositoryId: !Ref GitRepo
+                BranchName: !Ref GitBranch
+                OutputArtifactFormat: 'CODE_ZIP'
+              OutputArtifacts: [Name: SourceArtifacts]
               Namespace: SourceVariables
               RunOrder: 1
         - Name: Build
@@ -493,7 +472,7 @@ Resources:
               Configuration:
                 ProjectName: !Ref CodeBuildProject
               InputArtifacts:
-                - Name: SourceArtifact
+                - Name: SourceArtifacts
               OutputArtifacts:
                 - Name: BuildArtifacts
               RunOrder: 1
@@ -510,12 +489,12 @@ Resources:
                 RoleArn: !GetAtt 'CloudFormationRole.Arn'
                 StackName: !Ref 'AWS::StackName'
                 Capabilities: CAPABILITY_IAM
-                TemplatePath: 'SourceArtifact::pipeline.yml'
+                TemplatePath: 'SourceArtifacts::pipeline.yml'
                 ParameterOverrides: !Sub |
                   {
                     "CodeStarConnectionArn": "/github-connection",
-                    "GitHubRepo": "${GitHubRepo}",
-                    "GitHubBranch": "${GitHubBranch}",
+                    "GitRepo": "${GitRepo}",
+                    "GitBranch": "${GitBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
                     "PipelineApprovalEmail": "${PipelineApprovalEmail}",
                     "AlertTopicArn": "/alert/topicArn",
@@ -526,7 +505,7 @@ Resources:
                     "ExistingBucketName": "${ExistingBucketName}"
                   }
               InputArtifacts:
-                - Name: SourceArtifact
+                - Name: SourceArtifacts
               RunOrder: 1
         - Name: Release
           Actions:
