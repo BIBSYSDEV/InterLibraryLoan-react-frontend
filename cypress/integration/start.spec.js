@@ -4,6 +4,6 @@ context('start', () => {
   });
 
   it('renders', () => {
-    cy.get('[data-testid="start"]').contains('Velkommen!');
+    cy.get('[data-testid="start"]').contains('Testing 123!');
   });
 });
