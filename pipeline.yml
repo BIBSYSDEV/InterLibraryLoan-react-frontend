@@ -342,13 +342,6 @@ Resources:
                   - 'arn:aws:s3:::${BucketName}/*'
                   - BucketName: !Ref ArtifactsBucket
 
-  CodeBuildSourceCredential:
-    Type: AWS::CodeBuild::SourceCredential
-    Properties:
-      AuthType: PERSONAL_ACCESS_TOKEN
-      ServerType: GITHUB
-      Token: '{{resolve:secretsmanager:githubtoken:SecretString}}'
-
   CodeBuildProject:
     DependsOn:
     - CloudFormationRole # make sure that CloudFormationRole is deleted last
