@@ -350,7 +350,9 @@ Resources:
       Token: '{{resolve:secretsmanager:githubtoken:SecretString}}'
 
   CodeBuildProject:
-    DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
+    DependsOn:
+    - CloudFormationRole # make sure that CloudFormationRole is deleted last
+    - CodeBuildSourceCredential
     Type: 'AWS::CodeBuild::Project'
     Metadata:
       cfn_nag:
