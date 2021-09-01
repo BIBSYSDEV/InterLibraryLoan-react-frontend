@@ -46,10 +46,6 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
-  CodeStarConnectionArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: '/github-connection'
-    Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
   GitRepo:
     Type: String
     Default: BIBSYSDEV/InterLibraryLoan-react-frontend
@@ -273,10 +269,6 @@ Resources:
                   - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*'
               - Effect: Allow
                 Action:
-                  - codestar-connections:UseConnection
-                Resource: !Ref CodeStarConnectionArn
-              - Effect: Allow
-                Action:
                   - codebuild:BatchGetBuilds
                   - codebuild:StartBuild
                 Resource:
@@ -354,10 +346,6 @@ Resources:
                   - resource-groups:*
                   - route53:* # GetHostedZone
                 Resource: '*'
-              - Effect: Allow
-                Action:
-                  - codestar-connections:PassConnection
-                Resource: !Ref CodeStarConnectionArn
 
   CodeBuildRole:
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
@@ -411,19 +399,26 @@ Resources:
           - id: W32
             reason: 'Skip encryption for CodeBuild project'
     Properties:
+      Name: !Sub '${AWS::StackName}-build'
+      ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Artifacts:
-        Type: CODEPIPELINE
+        Type: no_artifacts
       Environment:
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
         EnvironmentVariables:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
-      Name: !Sub '${AWS::StackName}-build'
-      ServiceRole: !GetAtt 'CodeBuildRole.Arn'
+          - Name: CFN_TEMPLATE
+            Value: !Ref StackTemplatePath
       Source:
-        Type: CODEPIPELINE
+        Auth:
+          Type: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+        Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
+        Type: GITHUB
+      Triggers:
+        Webhook: true
       TimeoutInMinutes: 30
       Cache:
         Type: S3
@@ -445,22 +440,6 @@ Resources:
         - Key: 'automation:approval-timeout'
           Value: '1'
       Stages:
-        - Name: Source
-          Actions:
-            - Name: Source
-              ActionTypeId:
-                Category: Source
-                Owner: AWS
-                Version: '1'
-                Provider: CodeStarSourceConnection
-              Configuration:
-                ConnectionArn: !Ref CodeStarConnectionArn
-                FullRepositoryId: !Ref GitRepo
-                BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
-              OutputArtifacts: [Name: SourceArtifacts]
-              Namespace: SourceVariables
-              RunOrder: 1
         - Name: Build
           Actions:
             - Name: TestAndBuildApp
@@ -492,7 +471,6 @@ Resources:
                 TemplatePath: 'SourceArtifacts::pipeline.yml'
                 ParameterOverrides: !Sub |
                   {
-                    "CodeStarConnectionArn": "/github-connection",
                     "GitRepo": "${GitRepo}",
                     "GitBranch": "${GitBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
