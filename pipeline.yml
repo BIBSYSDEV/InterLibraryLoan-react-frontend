@@ -343,9 +343,7 @@ Resources:
                   - BucketName: !Ref ArtifactsBucket
 
   CodeBuildProject:
-    DependsOn:
-    - CloudFormationRole # make sure that CloudFormationRole is deleted last
-    - CodeBuildSourceCredential
+    DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
     Type: 'AWS::CodeBuild::Project'
     Metadata:
       cfn_nag:
