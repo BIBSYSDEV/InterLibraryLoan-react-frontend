@@ -342,6 +342,13 @@ Resources:
                   - 'arn:aws:s3:::${BucketName}/*'
                   - BucketName: !Ref ArtifactsBucket
 
+  CodeBuildSourceCredential:
+    Type: AWS::CodeBuild::SourceCredential
+    Properties:
+      AuthType: PERSONAL_ACCESS_TOKEN
+      ServerType: GITHUB
+      Token: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+
   CodeBuildProject:
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
     Type: 'AWS::CodeBuild::Project'
@@ -364,7 +371,8 @@ Resources:
             Value: !Ref ArtifactsBucket
       Source:
         Auth:
-          Type: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+          Type: OAUTH
+          Resource: !Ref CodeBuildSourceCredential
         Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
         Type: GITHUB
       Triggers:
