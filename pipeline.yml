@@ -406,12 +406,10 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:4.0
+        Image: aws/codebuild/standard:5.0
         EnvironmentVariables:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
-          - Name: CFN_TEMPLATE
-            Value: !Ref StackTemplatePath
       Source:
         Auth:
           Type: '{{resolve:secretsmanager:githubtoken:SecretString}}'
