@@ -370,11 +370,8 @@ Resources:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
       Source:
-        Auth:
-          Type: OAUTH
-          Resource: !Ref CodeBuildSourceCredential
-        Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
         Type: GITHUB
+        Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
       Triggers:
         Webhook: true
       TimeoutInMinutes: 30
