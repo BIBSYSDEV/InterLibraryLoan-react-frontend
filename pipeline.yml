@@ -104,16 +104,6 @@ Conditions:
   IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
 
 Resources:
-  IllS3StorageNameParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: /ill/s3-storage-name
-      Type: String
-      Value: !Join
-        - '-'
-        - - 'ill-backend-s3-storage'
-          - '{{resolve:ssm:environment:1}}'
-      Description: Name of the S3-bucket to store images and audio files
 
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
@@ -145,44 +135,6 @@ Resources:
             Transition:
               StorageClass: INTELLIGENT_TIERING
               TransitionInDays: 30
-
-  IllS3Bucket:
-    Type: AWS::S3::Bucket
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W31
-            reason: 'Access logging handled by CloudFront'
-          - id: W35
-            reason: 'Skip encryption for website bucket'
-          - id: W41
-            reason: 'This bucket is public'
-    Properties:
-      BucketName: !Join
-        - '-'
-        - - 'ill-backend-s3-storage'
-          - '{{resolve:ssm:environment:1}}'
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-
-  IllS3BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: BucketPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadForGetBucketObjects
-            Effect: Allow
-            Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}'
-            Action: 's3:GetObject'
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref IllS3Bucket
-                - /*
-      Bucket: !Ref IllS3Bucket
 
   PipelineApprovalTopic:
     Type: AWS::SNS::Topic
