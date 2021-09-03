@@ -66,7 +66,7 @@ Parameters:
   GitHubBranch:
     Type: String
     Default: develop
-    Description: Git repository branch
+    Description: Git repository branch PCB
   PipelineApprovalAction:
     Description: Do you want to add a manual approval action to the Release stage of this Pipeline?
     AllowedValues:
@@ -172,44 +172,6 @@ Resources:
             Transition:
               StorageClass: INTELLIGENT_TIERING
               TransitionInDays: 30
-
-  IllS3Bucket:
-    Type: AWS::S3::Bucket
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W31
-            reason: 'Access logging handled by CloudFront'
-          - id: W35
-            reason: 'Skip encryption for website bucket'
-          - id: W41
-            reason: 'This bucket is public'
-    Properties:
-      BucketName: !Join
-        - '-'
-        - - 'ill-backend-s3-storage'
-          - '{{resolve:ssm:environment:1}}'
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-
-  IllS3BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: BucketPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadForGetBucketObjects
-            Effect: Allow
-            Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}'
-            Action: 's3:GetObject'
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref IllS3Bucket
-                - /*
-      Bucket: !Ref IllS3Bucket
 
   PipelineApprovalTopic:
     Type: AWS::SNS::Topic
