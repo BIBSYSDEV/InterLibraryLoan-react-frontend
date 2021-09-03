@@ -72,7 +72,7 @@ const App = () => {
         </StyledFullPageProgressWrapper>
       )}
       {fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}
-      {isMissingRecordId && <ErrorBanner error={new Error('URL is missing parameter "recordid"')} />}
+      {isMissingRecordId && <ErrorBanner error={new Error(' URL is missing parameter "recordid"')} />}
     </>
   );
 };
