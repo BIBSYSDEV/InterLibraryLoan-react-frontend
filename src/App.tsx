@@ -5,6 +5,7 @@ import ErrorBanner from './components/ErrorBanner';
 import styled from 'styled-components';
 import { MetaData } from './types/app.types';
 import MetadataHolder from './components/MetadataPresentation';
+import OrderSchema from './components/OrderSchema';
 
 export const StyledFullPageProgressWrapper = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ export const PageWrapper = styled.div`
   padding: 0;
   margin: 1rem;
   word-break: break-word;
+  max-width: 60rem;
 `;
 
 export const StyledPageTitleTypography = styled(Typography)`
@@ -64,6 +66,7 @@ const App = () => {
               Use this form to send ILL-request using NCIP
             </Typography>
             <MetadataHolder metaData={metaData} />
+            <OrderSchema metaData={metaData} />
           </PageWrapper>
         )
       ) : (

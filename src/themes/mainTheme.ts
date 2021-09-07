@@ -39,7 +39,7 @@ export default createTheme({
       fontFamily: 'Barlow, sans-serif',
       fontSize: '1rem',
       fontWeight: 400,
-      lineHeight: '1.5rem',
+      lineHeight: '1.8rem',
       letterSpacing: '0.005em',
       color: Colors.PrimaryText,
     },
