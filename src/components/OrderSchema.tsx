@@ -64,14 +64,14 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
             </Grid>
             <Grid item xs={12}>
               <Field name="selectedLibrary">
-                {({ field, meta: { error, touched } }: FieldProps) => (
+                {({ field, meta: { error } }: FieldProps) => (
                   <FormControl required component="fieldset">
                     <FormLabel component="legend">
                       <StyledFormLabelTypography display="inline" gutterBottom variant="body1">
                         Choose Library:
                       </StyledFormLabelTypography>
                     </FormLabel>
-                    {error && <FormHelperText error>{error}</FormHelperText>}
+                    <FormHelperText error>{error}</FormHelperText>
                     <RadioGroup {...field} aria-label="Library" name="selectedLibrary" value={field.value}>
                       {metaData.libraries.map((library) => (
                         <FormControlLabel
