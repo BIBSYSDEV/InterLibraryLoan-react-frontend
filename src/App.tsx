@@ -21,7 +21,6 @@ export const PageWrapper = styled.div`
   padding: 0;
   margin: 1rem;
   word-break: break-word;
-  max-width: 60rem;
 `;
 
 export const StyledPageTitleTypography = styled(Typography)`
