@@ -5,8 +5,9 @@ import { MetaData } from '../types/app.types';
 
 export const mockMetadata: MetaData = {
   title: 'Sample Title',
-  creators: ['Per Bjarne Ytre-Arne'],
+  creators: ['Per Bjarne Ytre-Arne', 'Børre Børresen'],
   year: '1974',
+  isbn: '23423432432',
   publicationPlace: 'Trondheim',
   source: 'BIBSYS_ILS - oria.no',
   libraries: [

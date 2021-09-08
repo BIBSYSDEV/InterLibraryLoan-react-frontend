@@ -43,7 +43,6 @@ interface OrderSchemaProps {
 
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
   const handleSubmit = (values: SchemaValues) => {
-    console.log('SUBMIT', values);
     //todo: call NCIP-service
   };
 
@@ -67,7 +66,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
             <Grid item xs={12}>
               <Field name="selectedLibrary">
                 {({ field, meta: { error } }: FieldProps) => (
-                  <FormControl required component="fieldset">
+                  <FormControl required component="fieldset" data-test>
                     <FormLabel component="legend">
                       <StyledFormLabelTypography display="inline" gutterBottom variant="body1">
                         Choose Library:
@@ -80,7 +79,13 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
                           key={library.library_code}
                           disabled={!library.available_for_loan}
                           value={library.library_code}
-                          control={<Radio size="medium" required={true} color="primary" />}
+                          control={
+                            <Radio
+                              data-testid={`library-option-${library.library_code}`}
+                              required={true}
+                              color="primary"
+                            />
+                          }
                           label={`${library.library_name}${
                             !library.available_for_loan ? ' (Closed for inter-library loan)' : ''
                           }`}
