@@ -57,8 +57,8 @@ export const interceptRequestsOnMock = () => {
 
   const mock = new MockAdapter(Axios);
 
-  mockGetDelayedAndLogged(`${API_PATHS.metadataPath}\\?recordid=${mockRecordIdThatTriggerServerError}`, 503, null);
-  mockGetDelayedAndLogged(`${API_PATHS.metadataPath}.*`, 200, mockMetadata);
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggerServerError}`, 503, null);
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
 
   mock.onAny().reply(function (config) {
     throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);
