@@ -57,8 +57,10 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
   useEffect(() => {
     const fetchSRU = async () => {
       try {
-        const per = (await getSRU('22257098950002203', 'NTNU_UB', '1150401')).data;
-        console.log('PCB', per);
+        metaData.libraries.map(async (library) => {
+          const response = (await getSRU(library.mms_id, library.institution_code, library.library_code)).data;
+          console.log(response.libraryCode);
+        });
       } catch (error) {
         console.error(error);
         //  setFetchMetaDataError(error);
