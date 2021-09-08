@@ -37,10 +37,9 @@ export default createTheme({
     },
     body1: {
       fontFamily: 'Barlow, sans-serif',
-      fontSize: '1rem',
+      fontSize: '0.9rem',
       fontWeight: 400,
-      lineHeight: '1.8rem',
-      letterSpacing: '0.005em',
+      lineHeight: '1.5rem',
       color: Colors.PrimaryText,
     },
   },

@@ -35,7 +35,7 @@ interface SchemaValues {
   selectedLibrary: string;
 }
 
-const emptySchema = { patronId: '', selectedLibrary: '' };
+const emptySchema: SchemaValues = { patronId: '', selectedLibrary: '' };
 
 interface OrderSchemaProps {
   metaData: MetaData;
@@ -60,7 +60,9 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
         <Form>
           <StyledGridContainer container spacing={4}>
             <Grid item xs={12}>
-              <Typography aria-hidden="true">Mandatory fields are marked with *</Typography>
+              <Typography variant="caption" aria-hidden="true">
+                Mandatory fields are marked with *
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Field name="selectedLibrary">
@@ -78,7 +80,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
                           key={library.library_code}
                           disabled={!library.available_for_loan}
                           value={library.library_code}
-                          control={<Radio required={true} color="primary" />}
+                          control={<Radio size="medium" required={true} color="primary" />}
                           label={`${library.library_name}${
                             !library.available_for_loan ? ' (Closed for inter-library loan)' : ''
                           }`}

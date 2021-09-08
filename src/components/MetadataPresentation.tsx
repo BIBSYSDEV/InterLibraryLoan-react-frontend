@@ -5,6 +5,10 @@ import { MetaData } from '../types/app.types';
 
 const StyledRow = styled.div`
   display: flex;
+  margin-bottom: 0.2rem;
+  @media (max-width: 25rem) {
+    flex-direction: column;
+  }
 `;
 const StyledMetadataHolder = styled.div`
   margin-top: 1.5rem;
