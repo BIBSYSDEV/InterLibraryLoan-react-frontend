@@ -45,7 +45,7 @@ const App = () => {
           setFetchMetaDataError(undefined);
           recordId && setMetaData((await getMetadata(recordId)).data);
         } catch (error) {
-          setFetchMetaDataError(error);
+          error instanceof Error && setFetchMetaDataError(error);
         } finally {
           setIsLoadingMetaData(false);
         }
