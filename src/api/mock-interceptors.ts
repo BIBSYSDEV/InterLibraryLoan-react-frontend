@@ -1,7 +1,25 @@
 import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
-import { MetaData } from '../types/app.types';
+import { MetaData, SRUResponse } from '../types/app.types';
+
+export const mockSRUResponse: SRUResponse = {
+  mmsId: '22257098950002203',
+  institution: 'NTNU_UB',
+  libraryCode: '1150401',
+  totalNumberOfItems: 3,
+  numberAvailForInterLibraryLoan: 2,
+  availableDate: '2021-09-08T00:00Z',
+};
+
+export const mockSRUResponseWithNoItems: SRUResponse = {
+  mmsId: '22257098950002203',
+  institution: 'NTNU_UB',
+  libraryCode: '1150401',
+  totalNumberOfItems: 0,
+  numberAvailForInterLibraryLoan: 0,
+  availableDate: '2021-09-08T00:00Z',
+};
 
 export const mockMetadata: MetaData = {
   title: 'Sample Title',
@@ -35,7 +53,9 @@ export const mockMetadata: MetaData = {
   ],
 };
 
-export const mockRecordIdThatTriggerServerError = '777';
+export const mockRecordIdThatTriggersServerError = '777';
+export const mockMMSIdThatTriggersResponseWithNoItems = '123';
+export const mockMMSIdThatTriggersServerError = '234';
 
 export const interceptRequestsOnMock = () => {
   const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
@@ -57,8 +77,16 @@ export const interceptRequestsOnMock = () => {
 
   const mock = new MockAdapter(Axios);
 
-  mockGetDelayedAndLogged(`${API_PATHS.metadataPath}\\?recordid=${mockRecordIdThatTriggerServerError}`, 503, null);
-  mockGetDelayedAndLogged(`${API_PATHS.metadataPath}.*`, 200, mockMetadata);
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggersServerError}`, 503, null);
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
+
+  mockGetDelayedAndLogged(
+    `${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
+    200,
+    mockSRUResponseWithNoItems
+  );
+  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null);
+  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse);
 
   mock.onAny().reply(function (config) {
     throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);

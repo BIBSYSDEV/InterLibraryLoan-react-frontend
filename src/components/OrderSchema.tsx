@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { MetaData } from '../types/app.types';
+import React, { FC, useEffect } from 'react';
+import { MetaData, SRUResponse } from '../types/app.types';
 import {
   Button,
   FormControl,
@@ -15,6 +15,7 @@ import {
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 import styled from 'styled-components';
 import * as Yup from 'yup';
+import { getMetadata, getSRU } from '../api/api';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -52,6 +53,21 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
       .required('Recipient is a required value'),
     selectedLibrary: Yup.string().required('A library is required to be selected'),
   });
+
+  useEffect(() => {
+    const fetchSRU = async () => {
+      try {
+        const per = (await getSRU('22257098950002203', 'NTNU_UB', '1150401')).data;
+        console.log('PCB', per);
+      } catch (error) {
+        console.error(error);
+        //  setFetchMetaDataError(error);
+      } finally {
+        //setIsLoadingMetaData(false);
+      }
+    };
+    metaData && fetchSRU().then();
+  }, [metaData]);
 
   return (
     <Formik onSubmit={handleSubmit} initialValues={emptySchema} validationSchema={ValidationSchema}>
