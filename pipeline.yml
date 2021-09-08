@@ -1,8 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: CloudFront and Continuous Deployment setup for contents service stack
+Description: CloudFront and Continuous Deployment setup for ill service stack
 
 # Name:
-# Recommended: contents-cloudfront-and-pipeline
+# Recommended: ill-cloudfront-and-pipeline
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -10,8 +10,8 @@ Metadata:
       - Label:
           default: Git Settings
         Parameters:
-          - GitRepo
-          - GitBranch
+          - GitHubRepo
+          - GitHubBranch
       - Label:
           default: Pipeline approval
         Parameters:
@@ -28,9 +28,9 @@ Metadata:
           - HostedZoneName
           - SubDomainNameWithDot
     ParameterLabels:
-      GitRepo:
+      GitHubRepo:
         default: Git Repo
-      GitBranch:
+      GitHubBranch:
         default: Git Branch
       PipelineApprovalAction:
         default: Approval action
@@ -46,18 +46,23 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
-  CodeStarConnectionArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: '/github-connection'
-    Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
-  GitRepo:
+  GitHubOAuthToken:
+    Description: OAuth token used by AWS CodePipeline to connect to GitHub
+    NoEcho: true
     Type: String
-    Default: BIBSYSDEV/innholdstjeneste-visningsklient
+    Default: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+  GitHubOwner:
+    Description: GitHub username owning the repo
+    Type: String
+    Default: BIBSYSDEV
+  GitHubRepo:
+    Type: String
+    Default: InterLibraryLoan-react-frontend
     Description: Git repository name
-  GitBranch:
+  GitHubBranch:
     Type: String
     Default: develop
-    Description: Git repository branch
+    Description: Git repository branch PCB
   PipelineApprovalAction:
     Description: Do you want to add a manual approval action to the Release stage of this Pipeline?
     AllowedValues:
@@ -79,7 +84,7 @@ Parameters:
       \ \xA7{SubDomainNameWithDot}\xA7{HostedZoneName}. Leave blank for naked (or\
       \ apex and bare) domain. Requires ParentZoneStack parameter!"
     Type: String
-    Default: 'contents.'
+    Default: 'ill.'
   HostedZoneId:
     Description: 'The Route53 hosted zone ID'
     Type: 'AWS::SSM::Parameter::Value<String>'
@@ -91,7 +96,7 @@ Parameters:
   DomainCertificateArn:
     Description: 'The domain certificate ARN'
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/contents/cloudFrontCertificateArn'
+    Default: '/ill/cloudFrontCertificateArn'
   ExistingBucketName:
     Description: '(Optional) The name of an existing S3 bucket, or empty to create a new bucket'
     Type: String
@@ -108,16 +113,6 @@ Conditions:
   IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
 
 Resources:
-  ContentsS3StorageNameParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: /contents/s3-storage-name
-      Type: String
-      Value: !Join
-        - '-'
-        - - 'contents-backend-s3-storage'
-          - '{{resolve:ssm:environment:1}}'
-      Description: Name of the S3-bucket to store images and audio files
 
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
@@ -149,44 +144,6 @@ Resources:
             Transition:
               StorageClass: INTELLIGENT_TIERING
               TransitionInDays: 30
-
-  ContentsS3Bucket:
-    Type: AWS::S3::Bucket
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W31
-            reason: 'Access logging handled by CloudFront'
-          - id: W35
-            reason: 'Skip encryption for website bucket'
-          - id: W41
-            reason: 'This bucket is public'
-    Properties:
-      BucketName: !Join
-        - '-'
-        - - 'contents-backend-s3-storage'
-          - '{{resolve:ssm:environment:1}}'
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-
-  ContentsS3BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: BucketPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadForGetBucketObjects
-            Effect: Allow
-            Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}'
-            Action: 's3:GetObject'
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref ContentsS3Bucket
-                - /*
-      Bucket: !Ref ContentsS3Bucket
 
   PipelineApprovalTopic:
     Type: AWS::SNS::Topic
@@ -273,10 +230,6 @@ Resources:
                   - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*'
               - Effect: Allow
                 Action:
-                  - codestar-connections:UseConnection
-                Resource: !Ref CodeStarConnectionArn
-              - Effect: Allow
-                Action:
                   - codebuild:BatchGetBuilds
                   - codebuild:StartBuild
                 Resource:
@@ -354,10 +307,6 @@ Resources:
                   - resource-groups:*
                   - route53:* # GetHostedZone
                 Resource: '*'
-              - Effect: Allow
-                Action:
-                  - codestar-connections:PassConnection
-                Resource: !Ref CodeStarConnectionArn
 
   CodeBuildRole:
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
@@ -411,23 +360,22 @@ Resources:
           - id: W32
             reason: 'Skip encryption for CodeBuild project'
     Properties:
+      Name: !Sub '${AWS::StackName}-build'
+      ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Artifacts:
-        Type: CODEPIPELINE
+        Type: NO_ARTIFACTS
       Environment:
+        Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
-        Type: LINUX_CONTAINER
         EnvironmentVariables:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
-          - Name: REACT_APP_INNHOLDSTJENESTE_API_URL
-            Value: 'https://{{resolve:ssm:/api/domainName:1}}/contents'
-          - Name: REACT_APP_INNHOLDSTJENESTE_FILES_URL
-            Value: !Sub 'https://${RecordSet}/'
-      Name: !Sub '${AWS::StackName}-build'
-      ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
-        Type: CODEPIPELINE
+        Type: GITHUB
+        Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
+      Triggers:
+        Webhook: true
       TimeoutInMinutes: 30
       Cache:
         Type: S3
@@ -454,15 +402,17 @@ Resources:
             - Name: Source
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: '1'
-                Provider: CodeStarSourceConnection
+                Provider: GitHub
               Configuration:
-                ConnectionArn: !Ref CodeStarConnectionArn
-                FullRepositoryId: !Ref GitRepo
-                BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
-              OutputArtifacts: [Name: SourceArtifacts]
+                Owner: !Ref GitHubOwner
+                OAuthToken: !Ref GitHubOAuthToken
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                PollForSourceChanges: false
+              OutputArtifacts:
+                - Name: SourceArtifacts
               Namespace: SourceVariables
               RunOrder: 1
         - Name: Build
@@ -496,16 +446,15 @@ Resources:
                 TemplatePath: 'SourceArtifacts::pipeline.yml'
                 ParameterOverrides: !Sub |
                   {
-                    "CodeStarConnectionArn": "/github-connection",
-                    "GitRepo": "${GitRepo}",
-                    "GitBranch": "${GitBranch}",
+                    "GitHubRepo": "${GitHubRepo}",
+                    "GitHubBranch": "${GitHubBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
                     "PipelineApprovalEmail": "${PipelineApprovalEmail}",
                     "AlertTopicArn": "/alert/topicArn",
                     "HostedZoneId": "/hostedzone/id",
                     "HostedZoneName": "/hostedzone/name",
                     "SubDomainNameWithDot": "${SubDomainNameWithDot}",
-                    "DomainCertificateArn": "/contents/cloudFrontCertificateArn",
+                    "DomainCertificateArn": "/ill/cloudFrontCertificateArn",
                     "ExistingBucketName": "${ExistingBucketName}"
                   }
               InputArtifacts:
@@ -766,33 +715,6 @@ Resources:
             - 'S3-${WebsiteBucketName}'
             - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
           ViewerProtocolPolicy: redirect-to-https
-        CacheBehaviors:
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${WebsiteBucketName}'
-              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: content/*
-          - AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
-            Compress: true
-            DefaultTTL: 0
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-            TargetOriginId: !Sub
-              - 'S3-${ContentsS3Bucket}'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
-            ViewerProtocolPolicy: redirect-to-https
-            PathPattern: files/*
         DefaultRootObject: 'index.html'
         PriceClass: PriceClass_100
         Restrictions:
@@ -831,15 +753,6 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
           #            OriginPath: /timestamp # TODO
-          - DomainName: !Sub
-              - '${ContentsS3Bucket}.s3.${AWS::Region}.amazonaws.com'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
-            Id: !Sub
-              - 'S3-${ContentsS3Bucket}'
-              - ContentsS3Bucket: !Ref ContentsS3Bucket
-            S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
-              #OriginPath: /timestamp # TODO
 
   CloudFrontAccessLogsBucket:
     Type: AWS::S3::Bucket
