@@ -1,5 +1,5 @@
-import React, { FC, useEffect } from 'react';
-import { MetaData, SRUResponse } from '../types/app.types';
+import React, { FC } from 'react';
+import { MetaData } from '../types/app.types';
 import {
   Button,
   FormControl,
@@ -15,7 +15,6 @@ import {
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 import styled from 'styled-components';
 import * as Yup from 'yup';
-import { getMetadata, getSRU } from '../api/api';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -43,6 +42,8 @@ interface OrderSchemaProps {
 }
 
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
+  const errors: any = [];
+
   const handleSubmit = (values: SchemaValues) => {
     //todo: call NCIP-service
   };
@@ -53,23 +54,6 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
       .required('Recipient is a required value'),
     selectedLibrary: Yup.string().required('A library is required to be selected'),
   });
-
-  useEffect(() => {
-    const fetchSRU = async () => {
-      try {
-        metaData.libraries.map(async (library) => {
-          const response = (await getSRU(library.mms_id, library.institution_code, library.library_code)).data;
-          console.log(response.libraryCode);
-        });
-      } catch (error) {
-        console.error(error);
-        //  setFetchMetaDataError(error);
-      } finally {
-        //setIsLoadingMetaData(false);
-      }
-    };
-    metaData && fetchSRU().then();
-  }, [metaData]);
 
   return (
     <Formik onSubmit={handleSubmit} initialValues={emptySchema} validationSchema={ValidationSchema}>
