@@ -62,7 +62,7 @@ Parameters:
   GitHubBranch:
     Type: String
     Default: develop
-    Description: Git repository branch
+    Description: Git repository branch PCB
   PipelineApprovalAction:
     Description: Do you want to add a manual approval action to the Release stage of this Pipeline?
     AllowedValues:
