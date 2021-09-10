@@ -20,7 +20,7 @@ interface LibraryLineProps {
   library: Library;
 }
 
-const TEXT = {
+export const TEXT = {
   CLOSED: 'Closed for interlibrary loan',
   NO_ITEM_INFO: 'Ingen eksemplarinformasjon. Kontakt biblioteket',
   OF: 'of',
@@ -74,7 +74,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
         )
       }
       label={
-        <>
+        <div data-testid={`library-label-${library.library_code}`}>
           <Typography
             display="inline"
             style={isDisabled ? { color: Colors.DisabledText } : { color: Colors.PrimaryText }}>
@@ -100,7 +100,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
               </StyledHoldingsInfo>
             ))
           )}
-        </>
+        </div>
       }
     />
   );

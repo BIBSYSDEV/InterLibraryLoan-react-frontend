@@ -104,11 +104,10 @@ export const interceptRequestsOnMock = () => {
   mockGetDelayedAndLogged(
     `${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
     200,
-    mockSRUResponseWithNoItems,
-    1000
+    mockSRUResponseWithNoItems
   );
-  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null, 2000);
-  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse, 1000);
+  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null);
+  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse);
 
   mock.onAny().reply(function (config) {
     throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);
