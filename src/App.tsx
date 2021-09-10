@@ -70,6 +70,8 @@ const App = () => {
     }
   }, [recordId, patronId, vId]);
 
+  //TODO: hva skjer med favicon
+
   return (
     <>
       {appError ? (
