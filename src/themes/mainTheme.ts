@@ -7,7 +7,8 @@ export enum Colors {
   Secondary = 'rgba(147, 10, 10, 1)',
   Background = '#ffffff',
   HoverTextFieldFilled = '#F5F5F5',
-  PrimaryText = 'rgb(58,58,58)',
+  PrimaryText = 'rgb(50,50,50)',
+  DisabledText = 'rgb(150,150,150)',
   Warning = 'rgba(147, 10, 10, 1)',
 }
 

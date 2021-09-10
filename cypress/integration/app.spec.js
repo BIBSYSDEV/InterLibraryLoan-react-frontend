@@ -1,4 +1,5 @@
-import { mockMetadata, mockRecordIdThatTriggerServerError } from '../../src/api/mock-interceptors';
+import { mockMetadata, mockRecordIdThatTriggersServerError } from '../../src/api/mock-interceptors';
+import { TEXT } from '../../src/components/LibraryLine';
 
 context('start', () => {
   beforeEach(() => {
@@ -23,7 +24,7 @@ context('start', () => {
   });
 
   it('shows errormessage when metadata-server responds with error', () => {
-    cy.visit(`/?recordid=${mockRecordIdThatTriggerServerError}`);
+    cy.visit(`/?recordid=${mockRecordIdThatTriggersServerError}`);
     cy.get('[data-testid="alert"]').should('exist').contains('503');
   });
 
@@ -31,5 +32,25 @@ context('start', () => {
     cy.visit('/?recordid=123');
     cy.get(`[data-testid="patron-field"]`).type('testuser');
     cy.get(`[data-testid="library-option-${mockMetadata.libraries[0].library_code}"]`).click();
+  });
+
+  it('library show holdings', () => {
+    cy.visit('/?recordid=123');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[0].library_code}"]`).contains('1 of 1 available');
+  });
+
+  it('library show server error', () => {
+    cy.visit('/?recordid=123');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains('503');
+  });
+
+  it('library show server error', () => {
+    cy.visit('/?recordid=123');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[2].library_code}"]`).contains(TEXT.NO_ITEM_INFO);
+  });
+
+  it('library show closed', () => {
+    cy.visit('/?recordid=123');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[1].library_code}"]`).contains(TEXT.CLOSED);
   });
 });

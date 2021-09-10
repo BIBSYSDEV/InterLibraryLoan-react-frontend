@@ -12,10 +12,20 @@ export interface MetaData {
   display_title?: string;
   libraries: Library[];
 }
+
 export interface Library {
   institution_code: string;
   library_name: string;
   mms_id: string;
   library_code: string;
   available_for_loan: boolean;
+}
+
+export interface SRUResponse {
+  mmsId: string;
+  institution: string;
+  libraryCode: string;
+  totalNumberOfItems: number;
+  numberAvailForInterLibraryLoan: number;
+  availableDate: string;
 }

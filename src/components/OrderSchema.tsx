@@ -3,11 +3,9 @@ import { MetaData } from '../types/app.types';
 import {
   Button,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
-  Radio,
   RadioGroup,
   TextField,
   Typography,
@@ -15,6 +13,7 @@ import {
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 import styled from 'styled-components';
 import * as Yup from 'yup';
+import LibraryLine from './LibraryLine';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -28,6 +27,10 @@ const StyledFormLabelTypography = styled(Typography)`
 
 const StyledHelperMessage = styled(Typography)`
   margin-left: 1rem;
+`;
+const StyledTextFieldWrapper = styled.div`
+  display: flex;
+  align-items: baseline;
 `;
 
 interface SchemaValues {
@@ -43,7 +46,7 @@ interface OrderSchemaProps {
 
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
   const handleSubmit = (values: SchemaValues) => {
-    //todo: call NCIP-service
+    alert(JSON.stringify(values, null, 2));
   };
 
   const ValidationSchema = Yup.object().shape({
@@ -75,21 +78,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
                     <FormHelperText error>{error}</FormHelperText>
                     <RadioGroup {...field} aria-label="Library" name="selectedLibrary" value={field.value}>
                       {metaData.libraries.map((library) => (
-                        <FormControlLabel
-                          key={library.library_code}
-                          disabled={!library.available_for_loan}
-                          value={library.library_code}
-                          control={
-                            <Radio
-                              data-testid={`library-option-${library.library_code}`}
-                              required={true}
-                              color="primary"
-                            />
-                          }
-                          label={`${library.library_name}${
-                            !library.available_for_loan ? ' (Closed for inter-library loan)' : ''
-                          }`}
-                        />
+                        <LibraryLine key={library.library_code} library={library} />
                       ))}
                     </RadioGroup>
                   </FormControl>
@@ -99,7 +88,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
             <Grid item xs={12}>
               <Field name="patronId">
                 {({ field, meta: { error, touched } }: FieldProps) => (
-                  <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                  <StyledTextFieldWrapper>
                     <TextField
                       required
                       data-testid="patron-field"
@@ -112,7 +101,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
                     <StyledHelperMessage variant="caption">
                       Patron ID for the patron you request on behalf of.
                     </StyledHelperMessage>
-                  </div>
+                  </StyledTextFieldWrapper>
                 )}
               </Field>
             </Grid>
