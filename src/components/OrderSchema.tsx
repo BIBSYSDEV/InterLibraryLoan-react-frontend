@@ -46,7 +46,7 @@ interface OrderSchemaProps {
 
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
   const handleSubmit = (values: SchemaValues) => {
-    //todo: call NCIP-service
+    alert(JSON.stringify(values, null, 2));
   };
 
   const ValidationSchema = Yup.object().shape({

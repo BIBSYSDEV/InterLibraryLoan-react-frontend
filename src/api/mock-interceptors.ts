@@ -7,8 +7,8 @@ export const mockSRUResponse: SRUResponse = {
   mmsId: '22257098950002203',
   institution: 'NTNU_UB',
   libraryCode: '1150401',
-  totalNumberOfItems: 3,
-  numberAvailForInterLibraryLoan: 2,
+  totalNumberOfItems: 1,
+  numberAvailForInterLibraryLoan: 1,
   availableDate: '2021-09-08T00:00Z',
 };
 
@@ -30,32 +30,53 @@ export const mockMetadata: MetaData = {
   source: 'BIBSYS_ILS - oria.no',
   libraries: [
     {
-      library_name: 'UiT Norges arktiske universitet Altabiblioteket ',
-      library_code: '1234567',
+      library_name: 'Nationalbiblioteket Depot',
+      library_code: '0183300',
+      available_for_loan: true,
+      institution_code: 'NB_DEP',
+      mms_id: '9288276ff6656',
+    },
+    {
+      library_name: 'NINA Biblioteket',
+      library_code: '4324324',
+      available_for_loan: false,
+      institution_code: 'UIT',
+      mms_id: '92882766626654',
+    },
+    {
+      library_name: 'NTNU Universitetsbiblioteket Gunnerusbiblioteket',
+      library_code: '6456456',
       available_for_loan: true,
       institution_code: 'UIT',
-      mms_id: '9288276662665',
+      mms_id: '92882766626651',
     },
     {
       library_name: 'UiT Norges arktiske universitet Narvikbiblioteket',
       library_code: '1234568',
       available_for_loan: false,
       institution_code: 'UIT',
-      mms_id: '9288276662661',
+      mms_id: '92882766626612',
     },
     {
       library_name: 'Universitetsbiblioteket i Bergen Bibliotek for matematisk- naturvitenskapelige fag',
       library_code: '1234569',
       available_for_loan: true,
       institution_code: 'UIB',
-      mms_id: '9288276662662',
+      mms_id: '92882766626623',
+    },
+    {
+      library_name: 'Some library that triggers serever error',
+      library_code: '12345369',
+      available_for_loan: true,
+      institution_code: 'UIB',
+      mms_id: '9288276662662233',
     },
   ],
 };
 
 export const mockRecordIdThatTriggersServerError = '777';
-export const mockMMSIdThatTriggersResponseWithNoItems = '123';
-export const mockMMSIdThatTriggersServerError = '234';
+export const mockMMSIdThatTriggersResponseWithNoItems = '92882766626651';
+export const mockMMSIdThatTriggersServerError = '9288276662662233';
 
 export const interceptRequestsOnMock = () => {
   const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
@@ -83,10 +104,11 @@ export const interceptRequestsOnMock = () => {
   mockGetDelayedAndLogged(
     `${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
     200,
-    mockSRUResponseWithNoItems
+    mockSRUResponseWithNoItems,
+    1000
   );
-  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null);
-  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse, 2000);
+  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null, 2000);
+  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse, 1000);
 
   mock.onAny().reply(function (config) {
     throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);
