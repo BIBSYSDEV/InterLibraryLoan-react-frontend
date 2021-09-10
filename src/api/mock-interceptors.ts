@@ -38,7 +38,7 @@ export const mockMetadata: MetaData = {
     },
     {
       library_name: 'NINA Biblioteket',
-      library_code: '4324324',
+      library_code: '43424324',
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626654',
@@ -52,7 +52,7 @@ export const mockMetadata: MetaData = {
     },
     {
       library_name: 'UiT Norges arktiske universitet Narvikbiblioteket',
-      library_code: '1234568',
+      library_code: '12344568',
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626612',
@@ -65,7 +65,7 @@ export const mockMetadata: MetaData = {
       mms_id: '92882766626623',
     },
     {
-      library_name: 'Some library that triggers serever error',
+      library_name: 'Some library that triggers server error',
       library_code: '12345369',
       available_for_loan: true,
       institution_code: 'UIB',
