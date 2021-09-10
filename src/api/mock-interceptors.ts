@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
-import { MetaData, SRUResponse } from '../types/app.types';
+import { LibraryAccess, MetaData, SRUResponse } from '../types/app.types';
 
 export const mockSRUResponse: SRUResponse = {
   mmsId: '22257098950002203',
@@ -10,6 +10,11 @@ export const mockSRUResponse: SRUResponse = {
   totalNumberOfItems: 1,
   numberAvailForInterLibraryLoan: 1,
   availableDate: '2021-09-08T00:00Z',
+};
+
+export const mockedLibraryAccess: LibraryAccess = {
+  isAlmaLibrary: true,
+  isNCIPLibrary: false,
 };
 
 export const mockSRUResponseWithNoItems: SRUResponse = {
@@ -99,6 +104,8 @@ export const interceptRequestsOnMock = () => {
   const mock = new MockAdapter(Axios);
 
   mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggersServerError}`, 503, null);
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?patronid.*`, 500, mockedLibraryAccess, 2000);
+
   mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
 
   mockGetDelayedAndLogged(

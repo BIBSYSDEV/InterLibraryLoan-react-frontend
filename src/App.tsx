@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Typography } from '@material-ui/core';
-import { getMetadata } from './api/api';
+import { getLibraryAccess, getMetadata } from './api/api';
 import ErrorBanner from './components/ErrorBanner';
 import styled from 'styled-components';
-import { MetaData } from './types/app.types';
+import { LibraryAccess, MetaData } from './types/app.types';
 import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 
@@ -30,35 +30,57 @@ export const StyledPageTitleTypography = styled(Typography)`
 const App = () => {
   const query = new URLSearchParams(window.location.search);
   const recordId = query.get('recordid');
-  // const patronId = query.get('patronid');
-  // const vId = query.get('vid');
+  const patronId = query.get('patronid');
+  const vId = query.get('vid');
   const [metaData, setMetaData] = useState<MetaData>();
+  const [libraryAccess, setLibraryAccess] = useState<LibraryAccess>();
+  const [isLoadingAccess, setIsLoadingAccess] = useState(true);
   const [isLoadingMetaData, setIsLoadingMetaData] = useState(false);
-  const [isMissingRecordId, setIsMissingRecordId] = useState(false);
+  const [appError, setAppError] = useState<Error>();
   const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
 
   useEffect(() => {
+    const fetchLibraryAccess = async () => {
+      try {
+        setIsLoadingAccess(true);
+        setAppError(undefined);
+        patronId && setLibraryAccess((await getLibraryAccess(patronId)).data);
+      } catch (error) {
+        error instanceof Error && setAppError(error);
+      } finally {
+        setIsLoadingAccess(false);
+      }
+    }; //TODO: tests
     const fetchMetadata = async () => {
-      if (recordId) {
-        try {
-          setIsLoadingMetaData(true);
-          setFetchMetaDataError(undefined);
-          recordId && setMetaData((await getMetadata(recordId)).data);
-        } catch (error) {
-          error instanceof Error && setFetchMetaDataError(error);
-        } finally {
-          setIsLoadingMetaData(false);
-        }
-      } else {
-        setIsMissingRecordId(true);
+      try {
+        setIsLoadingMetaData(true);
+        setFetchMetaDataError(undefined);
+        recordId && setMetaData((await getMetadata(recordId)).data);
+      } catch (error) {
+        error instanceof Error && setFetchMetaDataError(error);
+      } finally {
+        setIsLoadingMetaData(false);
       }
     };
-    fetchMetadata().then();
-  }, [recordId]);
+    if (!recordId || !patronId || !vId) {
+      setAppError(new Error('URL must contain parameters: recordid, patrondid and vid'));
+    } else {
+      fetchLibraryAccess().then();
+      fetchMetadata().then();
+    }
+  }, [recordId, patronId, vId]);
 
   return (
     <>
-      {!isLoadingMetaData ? (
+      {appError ? (
+        <ErrorBanner error={appError} />
+      ) : isLoadingAccess ? (
+        <StyledFullPageProgressWrapper>
+          <CircularProgress />
+        </StyledFullPageProgressWrapper>
+      ) : !libraryAccess?.isNCIPLibrary ? (
+        <Typography>Du har ikke tilgang //TODO: BEDRE TEKST OG FORMATTERING</Typography>
+      ) : !isLoadingMetaData ? (
         metaData && (
           <PageWrapper>
             <Typography variant="h1" gutterBottom>
@@ -73,8 +95,8 @@ const App = () => {
           <CircularProgress />
         </StyledFullPageProgressWrapper>
       )}
+
       {fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}
-      {isMissingRecordId && <ErrorBanner error={new Error(' URL is missing parameter "recordid"')} />}
     </>
   );
 };

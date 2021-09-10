@@ -29,3 +29,8 @@ export interface SRUResponse {
   numberAvailForInterLibraryLoan: number;
   availableDate: string;
 }
+
+export interface LibraryAccess {
+  isNCIPLibrary: boolean;
+  isAlmaLibrary: boolean;
+}
