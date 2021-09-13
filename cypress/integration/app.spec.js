@@ -1,13 +1,17 @@
-import { mockMetadata, mockRecordIdThatTriggersServerError } from '../../src/api/mock-interceptors';
+import {
+  mockLibUserThatTriggersServerError,
+  mockLibUserWithoutNCIPAccess,
+  mockMetadata,
+  mockRecordIdThatTriggersServerError,
+} from '../../src/api/mock-interceptors';
 import { TEXT } from '../../src/components/LibraryLine';
 
 context('start', () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit('/?recordid=123&patronid=123&vid=123');
   });
 
   it('shows metadata', () => {
-    cy.visit('/?recordid=123');
     cy.get('[data-testid="metaData"]').contains('Creator');
     cy.get('[data-testid="metaData"]').contains(mockMetadata.title);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.year);
@@ -20,37 +24,42 @@ context('start', () => {
 
   it('shows errormessage when missing recordid parameter', () => {
     cy.visit('/?vid=NTNU');
-    cy.get('[data-testid="alert"]').should('exist').contains('missing');
+    cy.get('[data-testid="alert"]').should('exist').contains('must contain');
   });
 
   it('shows errormessage when metadata-server responds with error', () => {
-    cy.visit(`/?recordid=${mockRecordIdThatTriggersServerError}`);
-    cy.get('[data-testid="alert"]').should('exist').contains('503');
+    cy.visit(`/?recordid=${mockRecordIdThatTriggersServerError}&patronid=123&vid=123`);
+    cy.get('[data-testid="alert"]').should('exist').contains('500');
   });
 
   it('shows schema', () => {
-    cy.visit('/?recordid=123');
     cy.get(`[data-testid="patron-field"]`).type('testuser');
     cy.get(`[data-testid="library-option-${mockMetadata.libraries[0].library_code}"]`).click();
   });
 
   it('library show holdings', () => {
-    cy.visit('/?recordid=123');
     cy.get(`[data-testid="library-label-${mockMetadata.libraries[0].library_code}"]`).contains('1 of 1 available');
   });
 
   it('library show server error', () => {
-    cy.visit('/?recordid=123');
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains('503');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains('500');
   });
 
   it('library show server error', () => {
-    cy.visit('/?recordid=123');
     cy.get(`[data-testid="library-label-${mockMetadata.libraries[2].library_code}"]`).contains(TEXT.NO_ITEM_INFO);
   });
 
   it('library show closed', () => {
-    cy.visit('/?recordid=123');
     cy.get(`[data-testid="library-label-${mockMetadata.libraries[1].library_code}"]`).contains(TEXT.CLOSED);
+  });
+
+  it('lib_user-access-api shows servererror', () => {
+    cy.visit(`/?recordid=123&patronid=${mockLibUserThatTriggersServerError}&vid=123`);
+    cy.get('[data-testid="alert"]').should('exist').contains('500');
+  });
+
+  it('lib_user does not have access to ill', () => {
+    cy.visit(`/?recordid=123&patronid=${mockLibUserWithoutNCIPAccess}&vid=123`);
+    cy.get('[data-testid="warning"]').should('exist').contains('not available');
   });
 });

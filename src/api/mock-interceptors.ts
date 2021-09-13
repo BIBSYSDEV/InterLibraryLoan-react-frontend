@@ -14,6 +14,11 @@ export const mockSRUResponse: SRUResponse = {
 
 export const mockedLibraryAccess: LibraryAccess = {
   isAlmaLibrary: true,
+  isNCIPLibrary: true,
+};
+
+export const mockedLibraryAccessNoNcip: LibraryAccess = {
+  isAlmaLibrary: true,
   isNCIPLibrary: false,
 };
 
@@ -80,8 +85,12 @@ export const mockMetadata: MetaData = {
 };
 
 export const mockRecordIdThatTriggersServerError = '777';
+
 export const mockMMSIdThatTriggersResponseWithNoItems = '92882766626651';
 export const mockMMSIdThatTriggersServerError = '9288276662662233';
+
+export const mockLibUserThatTriggersServerError = '487932849';
+export const mockLibUserWithoutNCIPAccess = '809348204';
 
 export const interceptRequestsOnMock = () => {
   const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
@@ -103,19 +112,31 @@ export const interceptRequestsOnMock = () => {
 
   const mock = new MockAdapter(Axios);
 
-  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggersServerError}`, 503, null);
-  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?patronid.*`, 500, mockedLibraryAccess, 2000);
+  // METADATA
+  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggersServerError}`, 500, null);
 
   mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
 
+  // LIBCHECK
   mockGetDelayedAndLogged(
-    `${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
+    `${API_PATHS.libcheck}\\?libuser=${mockLibUserWithoutNCIPAccess}`,
+    200,
+    mockedLibraryAccessNoNcip,
+    0
+  );
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser=${mockLibUserThatTriggersServerError}`, 500, null);
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser.*`, 200, mockedLibraryAccess, 0);
+
+  // SRU
+  mockGetDelayedAndLogged(
+    `${API_PATHS.sru}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
     200,
     mockSRUResponseWithNoItems
   );
-  mockGetDelayedAndLogged(`${API_PATHS.alma}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 503, null);
-  mockGetDelayedAndLogged(`${API_PATHS.alma}.*`, 200, mockSRUResponse);
+  mockGetDelayedAndLogged(`${API_PATHS.sru}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 500, null);
+  mockGetDelayedAndLogged(`${API_PATHS.sru}.*`, 200, mockSRUResponse);
 
+  // ALL OTHER
   mock.onAny().reply(function (config) {
     throw new Error('Could not find mock for ' + config.url + ', with method: ' + config.method);
   });

@@ -14,7 +14,7 @@ export const getMetadata = (recordId: string): Promise<AxiosResponse<MetaData>> 
 
 export const getLibraryAccess = (patronid: string): Promise<AxiosResponse<LibraryAccess>> => {
   return Axios({
-    url: encodeURI(`${API_PATHS.metadata}?patronid=${patronid}`),
+    url: encodeURI(`${API_PATHS.libcheck}?libuser=${patronid}`),
     method: 'GET',
   });
 };
@@ -25,7 +25,7 @@ export const getSRU = (
   libraryCode: string
 ): Promise<AxiosResponse<SRUResponse>> => {
   return Axios({
-    url: encodeURI(`${API_PATHS.alma}?mms_id=${mmsId}&institution=${institution}&libraryCode=${libraryCode}`),
+    url: encodeURI(`${API_PATHS.sru}?mms_id=${mmsId}&institution=${institution}&libraryCode=${libraryCode}`),
     method: 'GET',
   });
 };

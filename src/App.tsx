@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { LibraryAccess, MetaData } from './types/app.types';
 import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
+import WarningBanner from './components/WarningBanner';
 
 export const StyledFullPageProgressWrapper = styled.div`
   display: flex;
@@ -81,7 +82,7 @@ const App = () => {
           <CircularProgress />
         </StyledFullPageProgressWrapper>
       ) : !libraryAccess?.isNCIPLibrary ? (
-        <Typography>Du har ikke tilgang //TODO: BEDRE TEKST OG FORMATTERING</Typography>
+        <WarningBanner message="Sorry, this feature is not available. Your institution does not support this ILL functionality" />
       ) : !isLoadingMetaData ? (
         metaData && (
           <PageWrapper>
