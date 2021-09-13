@@ -51,7 +51,7 @@ const App = () => {
       } finally {
         setIsLoadingAccess(false);
       }
-    }; //TODO: tests
+    };
     const fetchMetadata = async () => {
       try {
         setIsLoadingMetaData(true);
@@ -70,8 +70,6 @@ const App = () => {
       fetchMetadata().then();
     }
   }, [recordId, patronId, vId]);
-
-  //TODO: hva skjer med favicon
 
   return (
     <>
