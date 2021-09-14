@@ -88,7 +88,7 @@ const App = () => {
               Use this form to send ILL-request using NCIP
             </Typography>
             <MetadataHolder metaData={metaData} />
-            <OrderSchema metaData={metaData} />
+            <OrderSchema metaData={metaData} readonly={libraryAccess.isAlmaLibrary} />
           </PageWrapper>
         )
       ) : (
