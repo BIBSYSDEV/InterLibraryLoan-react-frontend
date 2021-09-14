@@ -29,3 +29,18 @@ export interface SRUResponse {
   numberAvailForInterLibraryLoan: number;
   availableDate: string;
 }
+
+export interface LibraryAccess {
+  isNCIPLibrary: boolean;
+  isAlmaLibrary: boolean;
+}
+
+export enum SearchParameters {
+  libuser = 'libuser',
+  mms_id = 'mms_id',
+  institution = 'institution',
+  libraryCode = 'librarycode',
+  recordid = 'recordid',
+  patronid = 'patronid',
+  vid = 'vid',
+}
