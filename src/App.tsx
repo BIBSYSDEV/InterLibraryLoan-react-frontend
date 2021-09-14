@@ -79,7 +79,7 @@ const App = () => {
         <StyledFullPageProgressWrapper>
           <CircularProgress />
         </StyledFullPageProgressWrapper>
-      ) : !libraryAccess?.isNCIPLibrary ? (
+      ) : !libraryAccess?.isNcipLibrary ? (
         <WarningBanner message="Sorry, this feature is not available. Your institution does not support this ILL functionality" />
       ) : !isLoadingMetaData ? (
         metaData && (

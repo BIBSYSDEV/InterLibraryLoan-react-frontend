@@ -14,12 +14,12 @@ export const mockSRUResponse: SRUResponse = {
 
 export const mockedLibraryAccess: LibraryAccess = {
   isAlmaLibrary: true,
-  isNCIPLibrary: true,
+  isNcipLibrary: true,
 };
 
 export const mockedLibraryAccessNoNcip: LibraryAccess = {
   isAlmaLibrary: true,
-  isNCIPLibrary: false,
+  isNcipLibrary: false,
 };
 
 export const mockSRUResponseWithNoItems: SRUResponse = {

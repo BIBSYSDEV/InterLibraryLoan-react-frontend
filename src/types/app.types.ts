@@ -31,7 +31,7 @@ export interface SRUResponse {
 }
 
 export interface LibraryAccess {
-  isNCIPLibrary: boolean;
+  isNcipLibrary: boolean;
   isAlmaLibrary: boolean;
 }
 
