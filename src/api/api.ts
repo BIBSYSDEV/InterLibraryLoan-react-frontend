@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse } from 'axios';
 import { setAxiosDefaults } from '../utils/axios-config';
 import { API_PATHS } from '../utils/constants';
-import { LibraryAccess, MetaData, SearchParameters, SRUResponse } from '../types/app.types';
+import { LibraryAccess, MetaData, NCIPRequest, NCIPResponse, SearchParameters, SRUResponse } from '../types/app.types';
 
 setAxiosDefaults();
 
@@ -16,6 +16,14 @@ export const getLibraryAccess = (libuser: string): Promise<AxiosResponse<Library
   return Axios({
     url: encodeURI(`${API_PATHS.libcheck}?${SearchParameters.libuser}=${libuser}`),
     method: 'GET',
+  });
+};
+
+export const postNCIPRequest = (request: NCIPRequest): Promise<AxiosResponse<NCIPResponse>> => {
+  return Axios({
+    url: encodeURI(`${API_PATHS.ncip}`),
+    method: 'POST',
+    data: encodeURI(`param=${request.author}`), //TODO
   });
 };
 

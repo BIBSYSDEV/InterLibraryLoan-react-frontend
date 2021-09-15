@@ -8,7 +8,6 @@ import { LIBRARY_CODES_ALWAYS_ACCESSIBLE_FOR_LOAN } from '../utils/constants';
 
 const StyledErrorMessage = styled(Typography)`
   margin-left: 0.3rem;
-  color: ${Colors.Warning};
 `;
 
 const StyledHoldingsInfo = styled(Typography)`

@@ -85,7 +85,7 @@ const App = () => {
         metaData && (
           <PageWrapper>
             <Typography variant="h1" gutterBottom>
-              Use this form to send ILL-request using NCIP
+              Use this form to send ILL-request
             </Typography>
             <MetadataHolder metaData={metaData} />
             <OrderSchema metaData={metaData} />

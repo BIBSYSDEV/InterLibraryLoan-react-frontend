@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
-import { MetaData } from '../types/app.types';
+import React, { FC, useState } from 'react';
+import { MetaData, NCIPRequest, NCIPResponse } from '../types/app.types';
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -14,6 +15,8 @@ import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import LibraryLine from './LibraryLine';
+import { postNCIPRequest } from '../api/api';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -45,8 +48,39 @@ interface OrderSchemaProps {
 }
 
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
-  const handleSubmit = (values: SchemaValues) => {
-    alert(JSON.stringify(values, null, 2));
+  const [isPostingRequest, setIsPostingRequest] = useState(false);
+  const [postRequestError, setPostRequestError] = useState<Error>();
+  const [ncipResponse, setNcipResponse] = useState<NCIPResponse>();
+
+  const handleSubmit = async (values: SchemaValues) => {
+    const ncipRequest: NCIPRequest = {
+      toAgencyId: '',
+      fromAgencyId: '',
+      isbnValue: '',
+      userIdentifierValue: '',
+      author: metaData.creators,
+      title: '',
+      publisher: '',
+      publicationDate: '',
+      placeOfPublication: '',
+      bibliographicRecordIdentifier: '',
+      bibliographicRecordIdentifierCode: '',
+      type: '',
+      requestType: '',
+      comment: '',
+      ncipServerUrl: '',
+    };
+    try {
+      console.log();
+      setIsPostingRequest(true);
+      setPostRequestError(undefined);
+      const response: NCIPResponse = (await postNCIPRequest(ncipRequest)).data;
+      setNcipResponse(response);
+    } catch (error) {
+      error instanceof Error && setPostRequestError(error);
+    } finally {
+      setIsPostingRequest(false);
+    }
   };
 
   const ValidationSchema = Yup.object().shape({
@@ -106,9 +140,24 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
               </Field>
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" type="submit" color="primary">
+              <Button disabled={isPostingRequest} variant="contained" type="submit" color="primary">
                 Request
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              {isPostingRequest ? (
+                <CircularProgress />
+              ) : ncipResponse ? (
+                <Alert severity="success" data-testid="request-success">
+                  <AlertTitle>{ncipResponse.message}</AlertTitle>
+                </Alert>
+              ) : (
+                postRequestError && (
+                  <Alert severity="error" data-testid="request-error">
+                    <AlertTitle>{postRequestError.message}</AlertTitle>
+                  </Alert>
+                )
+              )}
             </Grid>
           </StyledGridContainer>
         </Form>

@@ -1,15 +1,13 @@
 export interface MetaData {
   title: string;
-  creators: string[];
-  isbn?: string;
+  creators: string;
+  isbn: string;
   publicationPlace: string;
-  year?: string;
-  volume?: string;
-  source?: string;
-  record_id?: string;
-  creation_year?: string;
-  creator?: string[];
-  display_title?: string;
+  creation_year: string;
+  volume: string;
+  source: string;
+  record_id: string;
+  display_title: string;
   libraries: Library[];
 }
 
@@ -43,4 +41,26 @@ export enum SearchParameters {
   recordid = 'recordid',
   patronid = 'patronid',
   vid = 'vid',
+}
+
+export interface NCIPRequest {
+  toAgencyId: string;
+  fromAgencyId: string;
+  isbnValue: string;
+  userIdentifierValue: string;
+  author: string;
+  title: string;
+  publisher: string;
+  publicationDate: string;
+  placeOfPublication: string;
+  bibliographicRecordIdentifier: string;
+  bibliographicRecordIdentifierCode: string;
+  type: string;
+  requestType: string;
+  comment: string;
+  ncipServerUrl: string;
+}
+
+export interface NCIPResponse {
+  message: string;
 }

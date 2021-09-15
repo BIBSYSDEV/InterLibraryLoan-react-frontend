@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
-import { LibraryAccess, MetaData, SRUResponse } from '../types/app.types';
+import { LibraryAccess, MetaData, NCIPResponse, SRUResponse } from '../types/app.types';
 
 export const mockSRUResponse: SRUResponse = {
   mmsId: '22257098950002203',
@@ -31,10 +31,17 @@ export const mockSRUResponseWithNoItems: SRUResponse = {
   availableDate: '2021-09-08T00:00Z',
 };
 
+export const mockNCIPResponse: NCIPResponse = {
+  message: 'TODO',
+};
+
 export const mockMetadata: MetaData = {
+  record_id: '85899034',
   title: 'Sample Title',
-  creators: ['Per Bjarne Ytre-Arne', 'Børre Børresen'],
-  year: '1974',
+  display_title: 'Some display title',
+  creation_year: '1984',
+  volume: '234',
+  creators: 'Per Bjarne Ytre-Arne, Børre Børresen',
   isbn: '23423432432',
   publicationPlace: 'Trondheim',
   source: 'BIBSYS_ILS - oria.no',
@@ -103,10 +110,20 @@ export const interceptRequestsOnMock = () => {
     });
   };
 
+  const mockPostDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
+    mock.onPost(new RegExp(pathPattern)).reply((config) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(loggedReply(config, statusCode, mockedResponse));
+        }, delay);
+      });
+    });
+  };
+
   const loggedReply = (config: AxiosRequestConfig, statusCode: number, mockedResult: unknown) => {
     /* eslint-disable no-console */
-    console.log('MOCKED API-CALL: ', config.url);
     //console.log('MOCKED API-CALL: ', config, statusCode, mockedResult);
+    console.log('MOCKED API-CALL: ', config.url);
     return [statusCode, mockedResult];
   };
 
@@ -135,6 +152,9 @@ export const interceptRequestsOnMock = () => {
   );
   mockGetDelayedAndLogged(`${API_PATHS.sru}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 500, null);
   mockGetDelayedAndLogged(`${API_PATHS.sru}.*`, 200, mockSRUResponse);
+
+  // NCIP
+  mockPostDelayedAndLogged(`${API_PATHS.ncip}.*`, 201, mockNCIPResponse, 2000);
 
   // ALL OTHER
   mock.onAny().reply(function (config) {

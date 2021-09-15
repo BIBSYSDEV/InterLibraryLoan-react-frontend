@@ -44,11 +44,11 @@ interface MetadataHolderProps {
 const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
   <StyledMetadataHolder data-testid="metaData">
     <MetadataLine label={'Title'} value={metaData.title} />
-    {metaData.creators && <MetadataLine label={'Creator'} value={metaData.creators.join(', ')} />}
+    {metaData.creators && <MetadataLine label={'Creator'} value={metaData.creators} />}
     {metaData.isbn && <MetadataLine label={'Standard number'} value={metaData.isbn} />}
     {metaData.source && <MetadataLine label={'Source'} value={metaData.source} />}
     {metaData.volume && <MetadataLine label={'Volume'} value={metaData.volume} />}
-    {metaData.year && <MetadataLine label={'Year'} value={metaData.year} />}
+    {metaData.creation_year && <MetadataLine label={'Year'} value={metaData.creation_year} />}
     {metaData.publicationPlace && <MetadataLine label={'Place of publication'} value={metaData.publicationPlace} />}
   </StyledMetadataHolder>
 );
