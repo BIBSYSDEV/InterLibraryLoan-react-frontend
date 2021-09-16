@@ -66,6 +66,6 @@ context('start', () => {
 
   it('lib_user is alma-library and should get a read-only schema', () => {
     cy.visit(`/?recordid=123&patronid=${mockAlmaLibUser}&vid=123`);
-    cy.get('[data-testid="warning"]').should('exist').contains('Alma-bibliotek');
+    cy.get('[data-testid="warning"]').should('exist').contains('Alma libraries');
   });
 });
