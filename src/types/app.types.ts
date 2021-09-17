@@ -1,22 +1,24 @@
 export interface MetaData {
-  title: string;
   creators: string;
   isbn: string;
-  publicationPlace: string;
+  publication_place: string;
   creation_year: string;
   volume: string;
   source: string;
   record_id: string;
   display_title: string;
+  publisher: string;
+  pages: string;
   libraries: Library[];
 }
 
 export interface Library {
   institution_code: string;
-  library_name: string;
+  display_name: string;
   mms_id: string;
   library_code: string;
   available_for_loan: boolean;
+  ncip_server_url: string;
 }
 
 export interface SRUResponse {
@@ -31,6 +33,18 @@ export interface SRUResponse {
 export interface LibraryAccess {
   isNcipLibrary: boolean;
   isAlmaLibrary: boolean;
+}
+
+export enum MediaTypes {
+  Book = 'book',
+}
+
+export enum RequestTypes {
+  Physical = 'Physical',
+}
+
+export enum BibliographicRecordIdentifierCodes {
+  OwnerLocalRecordID = 'OwnerLocalRecordID',
 }
 
 export enum SearchParameters {

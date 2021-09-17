@@ -1,5 +1,12 @@
 import React, { FC, useState } from 'react';
-import { MetaData, NCIPRequest, NCIPResponse } from '../types/app.types';
+import {
+  BibliographicRecordIdentifierCodes,
+  MediaTypes,
+  MetaData,
+  NCIPRequest,
+  NCIPResponse,
+  RequestTypes,
+} from '../types/app.types';
 import {
   Button,
   CircularProgress,
@@ -17,11 +24,12 @@ import * as Yup from 'yup';
 import LibraryLine from './LibraryLine';
 import { postNCIPRequest } from '../api/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
+import { Colors } from '../themes/mainTheme';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
   padding: 1rem;
-  background-color: #f2f2f2;
+  background-color: ${Colors.SchemaBackground};
 `;
 
 const StyledFormLabelTypography = styled(Typography)`
@@ -31,6 +39,7 @@ const StyledFormLabelTypography = styled(Typography)`
 const StyledHelperMessage = styled(Typography)`
   margin-left: 1rem;
 `;
+
 const StyledTextFieldWrapper = styled.div`
   display: flex;
   align-items: baseline;
@@ -45,33 +54,34 @@ const emptySchema: SchemaValues = { patronId: '', selectedLibrary: '' };
 
 interface OrderSchemaProps {
   metaData: MetaData;
+  patronId: string;
 }
 
-const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
+const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
   const [ncipResponse, setNcipResponse] = useState<NCIPResponse>();
 
   const handleSubmit = async (values: SchemaValues) => {
+    const selectedLibrary = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
     const ncipRequest: NCIPRequest = {
-      toAgencyId: '',
-      fromAgencyId: '',
-      isbnValue: '',
-      userIdentifierValue: '',
+      toAgencyId: patronId,
+      fromAgencyId: selectedLibrary.library_code,
+      isbnValue: metaData.isbn,
+      userIdentifierValue: values.patronId,
       author: metaData.creators,
-      title: '',
-      publisher: '',
-      publicationDate: '',
-      placeOfPublication: '',
-      bibliographicRecordIdentifier: '',
-      bibliographicRecordIdentifierCode: '',
-      type: '',
-      requestType: '',
+      title: metaData.display_title,
+      publisher: metaData.publisher,
+      publicationDate: metaData.creation_year,
+      placeOfPublication: metaData.publication_place,
+      bibliographicRecordIdentifier: selectedLibrary.mms_id,
+      bibliographicRecordIdentifierCode: BibliographicRecordIdentifierCodes.OwnerLocalRecordID,
+      type: MediaTypes.Book,
+      requestType: RequestTypes.Physical,
       comment: '',
-      ncipServerUrl: '',
+      ncipServerUrl: selectedLibrary.mms_id,
     };
     try {
-      console.log();
       setIsPostingRequest(true);
       setPostRequestError(undefined);
       const response: NCIPResponse = (await postNCIPRequest(ncipRequest)).data;

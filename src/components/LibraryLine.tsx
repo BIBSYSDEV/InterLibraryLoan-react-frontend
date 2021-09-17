@@ -77,7 +77,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
           <Typography
             display="inline"
             style={isDisabled ? { color: Colors.DisabledText } : { color: Colors.PrimaryText }}>
-            {library.library_name}
+            {library.display_name}
           </Typography>
           {fetchSRUError ? (
             <StyledErrorMessage display="inline">({fetchSRUError.message})</StyledErrorMessage>

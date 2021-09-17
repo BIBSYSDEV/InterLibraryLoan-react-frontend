@@ -32,61 +32,68 @@ export const mockSRUResponseWithNoItems: SRUResponse = {
 };
 
 export const mockNCIPResponse: NCIPResponse = {
-  message: 'TODO',
+  message: 'Positive NCIP-response',
 };
 
 export const mockMetadata: MetaData = {
   record_id: '85899034',
-  title: 'Sample Title',
   display_title: 'Some display title',
   creation_year: '1984',
   volume: '234',
+  pages: '233424',
   creators: 'Per Bjarne Ytre-Arne, Børre Børresen',
   isbn: '23423432432',
-  publicationPlace: 'Trondheim',
+  publication_place: 'Trondheim',
+  publisher: 'Sample publisher',
   source: 'BIBSYS_ILS - oria.no',
   libraries: [
     {
-      library_name: 'Nationalbiblioteket Depot',
+      display_name: 'Nationalbiblioteket Depot',
       library_code: '0183300',
       available_for_loan: true,
       institution_code: 'NB_DEP',
       mms_id: '9288276ff6656',
+      ncip_server_url: 'http://www.example.com',
     },
     {
-      library_name: 'NINA Biblioteket',
+      display_name: 'NINA Biblioteket',
       library_code: '43424324',
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626654',
+      ncip_server_url: 'https://www.example.com',
     },
     {
-      library_name: 'NTNU Universitetsbiblioteket Gunnerusbiblioteket',
+      display_name: 'NTNU Universitetsbiblioteket Gunnerusbiblioteket',
       library_code: '6456456',
       available_for_loan: true,
       institution_code: 'UIT',
       mms_id: '92882766626651',
+      ncip_server_url: 'https://www.example.com',
     },
     {
-      library_name: 'UiT Norges arktiske universitet Narvikbiblioteket',
+      display_name: 'UiT Norges arktiske universitet Narvikbiblioteket',
       library_code: '12344568',
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626612',
+      ncip_server_url: 'https://www.example.com',
     },
     {
-      library_name: 'Universitetsbiblioteket i Bergen Bibliotek for matematisk- naturvitenskapelige fag',
+      display_name: 'Universitetsbiblioteket i Bergen Bibliotek for matematisk- naturvitenskapelige fag',
       library_code: '1234569',
       available_for_loan: true,
       institution_code: 'UIB',
       mms_id: '92882766626623',
+      ncip_server_url: 'https://www.example.com',
     },
     {
-      library_name: 'Some library that triggers server error',
+      display_name: 'Some library that triggers server error',
       library_code: '12345369',
       available_for_loan: true,
       institution_code: 'UIB',
       mms_id: '9288276662662233',
+      ncip_server_url: 'https://www.example.com',
     },
   ],
 };
