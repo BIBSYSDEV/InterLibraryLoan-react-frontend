@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
-import { LibraryAccess, MetaData, NCIPResponse, SRUResponse } from '../types/app.types';
+import { LibraryAccess, MetaData, NCIPResponse, SearchParameters, SRUResponse } from '../types/app.types';
 
 export const mockSRUResponse: SRUResponse = {
   mmsId: '22257098950002203',
@@ -41,7 +41,7 @@ export const mockMetadata: MetaData = {
   creation_year: '1984',
   volume: '234',
   pages: '233424',
-  creators: 'Per Bjarne Ytre-Arne, Børre Børresen',
+  creator: 'Per Bjarne Ytre-Arne, Børre Børresen',
   isbn: '23423432432',
   publication_place: 'Trondheim',
   publisher: 'Sample publisher',
@@ -129,39 +129,51 @@ export const interceptRequestsOnMock = () => {
 
   const loggedReply = (config: AxiosRequestConfig, statusCode: number, mockedResult: unknown) => {
     /* eslint-disable no-console */
-    //console.log('MOCKED API-CALL: ', config, statusCode, mockedResult);
-    console.log('MOCKED API-CALL: ', config.url);
+    console.log('MOCKED API-CALL: ', config, statusCode, mockedResult);
+    //console.log('MOCKED API-CALL: ', config.url);
     return [statusCode, mockedResult];
   };
 
   const mock = new MockAdapter(Axios);
 
   // METADATA
-  mockGetDelayedAndLogged(`${API_PATHS.metadata}\\?recordid=${mockRecordIdThatTriggersServerError}`, 500, null);
-
+  mockGetDelayedAndLogged(
+    `${API_PATHS.metadata}\\?${SearchParameters.documentId}=${mockRecordIdThatTriggersServerError}`,
+    500,
+    null
+  );
   mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
 
   // LIBCHECK
   mockGetDelayedAndLogged(
-    `${API_PATHS.libcheck}\\?libuser=${mockLibUserWithoutNCIPAccess}`,
+    `${API_PATHS.libcheck}\\?${SearchParameters.libuser}=${mockLibUserWithoutNCIPAccess}`,
     200,
     mockedLibraryAccessNoNcip,
     0
   );
-  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser=${mockLibUserThatTriggersServerError}`, 500, null);
-  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser.*`, 200, mockedLibraryAccess, 0);
+  mockGetDelayedAndLogged(
+    `${API_PATHS.libcheck}\\?${SearchParameters.libuser}=${mockLibUserThatTriggersServerError}`,
+    500,
+    null
+  );
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?${SearchParameters.libuser}.*`, 200, mockedLibraryAccess, 0);
 
   // SRU
   mockGetDelayedAndLogged(
-    `${API_PATHS.sru}\\?mms_id=${mockMMSIdThatTriggersResponseWithNoItems}`,
+    `${API_PATHS.sru}\\?${SearchParameters.mms_id}=${mockMMSIdThatTriggersResponseWithNoItems}`,
     200,
     mockSRUResponseWithNoItems
   );
-  mockGetDelayedAndLogged(`${API_PATHS.sru}\\?mms_id=${mockMMSIdThatTriggersServerError}`, 500, null);
+  mockGetDelayedAndLogged(
+    `${API_PATHS.sru}\\?${SearchParameters.mms_id}=${mockMMSIdThatTriggersServerError}`,
+    500,
+    null
+  );
   mockGetDelayedAndLogged(`${API_PATHS.sru}.*`, 200, mockSRUResponse);
 
   // NCIP
-  mockPostDelayedAndLogged(`${API_PATHS.ncip}.*`, 201, mockNCIPResponse, 2000);
+  mockPostDelayedAndLogged(`${API_PATHS.ncip}?error`, 400, mockNCIPResponse);
+  mockPostDelayedAndLogged(`${API_PATHS.ncip}.*`, 201, mockNCIPResponse);
 
   // ALL OTHER
   mock.onAny().reply(function (config) {

@@ -1,23 +1,23 @@
 export interface MetaData {
-  creators: string;
-  isbn: string;
-  publication_place: string;
   creation_year: string;
-  volume: string;
-  source: string;
-  record_id: string;
+  creator: string;
   display_title: string;
-  publisher: string;
-  pages: string;
+  isbn: string;
   libraries: Library[];
+  pages: string;
+  publication_place: string;
+  publisher: string;
+  record_id: string;
+  source: string;
+  volume: string;
 }
 
 export interface Library {
-  institution_code: string;
-  display_name: string;
-  mms_id: string;
-  library_code: string;
   available_for_loan: boolean;
+  display_name: string;
+  institution_code: string;
+  library_code: string;
+  mms_id: string;
   ncip_server_url: string;
 }
 
@@ -51,8 +51,9 @@ export enum SearchParameters {
   libuser = 'libuser',
   mms_id = 'mms_id',
   institution = 'institution',
-  libraryCode = 'librarycode',
+  libraryCode = 'libraryCode',
   recordid = 'recordid',
+  documentId = 'document_id',
   patronid = 'patronid',
   vid = 'vid',
 }

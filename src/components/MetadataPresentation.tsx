@@ -44,7 +44,7 @@ interface MetadataHolderProps {
 const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
   <StyledMetadataHolder data-testid="metaData">
     <MetadataLine label={'Title'} value={metaData.display_title} />
-    {metaData.creators && <MetadataLine label={'Creator'} value={metaData.creators} />}
+    <MetadataLine label={'Creator'} value={metaData.creator} />
     {metaData.isbn && <MetadataLine label={'Standard number'} value={metaData.isbn} />}
     {metaData.source && <MetadataLine label={'Source'} value={metaData.source} />}
     {metaData.volume && <MetadataLine label={'Volume'} value={metaData.volume} />}

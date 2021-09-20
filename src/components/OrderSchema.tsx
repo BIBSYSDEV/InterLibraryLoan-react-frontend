@@ -69,7 +69,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
       fromAgencyId: selectedLibrary.library_code,
       isbnValue: metaData.isbn,
       userIdentifierValue: values.patronId,
-      author: metaData.creators,
+      author: metaData.creator,
       title: metaData.display_title,
       publisher: metaData.publisher,
       publicationDate: metaData.creation_year,
@@ -79,7 +79,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
       type: MediaTypes.Book,
       requestType: RequestTypes.Physical,
       comment: '',
-      ncipServerUrl: selectedLibrary.mms_id,
+      ncipServerUrl: selectedLibrary.ncip_server_url,
     };
     try {
       setIsPostingRequest(true);
@@ -158,12 +158,12 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
               {isPostingRequest ? (
                 <CircularProgress />
               ) : ncipResponse ? (
-                <Alert severity="success" data-testid="request-success">
+                <Alert severity="success" data-testid="ncip-success-alert">
                   <AlertTitle>{ncipResponse.message}</AlertTitle>
                 </Alert>
               ) : (
                 postRequestError && (
-                  <Alert severity="error" data-testid="request-error">
+                  <Alert severity="error" data-testid="ncip-error-alert">
                     <AlertTitle>{postRequestError.message}</AlertTitle>
                   </Alert>
                 )
