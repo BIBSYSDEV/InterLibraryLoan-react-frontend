@@ -3,8 +3,10 @@ import {
   mockLibUserWithoutNCIPAccess,
   mockMetadata,
   mockRecordIdThatTriggersServerError,
-} from '../../src/api/mock-interceptors';
+  userIdentifierForNCIPServerError,
+} from '../../src/api/mockdata';
 import { TEXT } from '../../src/components/LibraryLine';
+import { LIBRARY_CODE_NB_DEP } from '../../src/utils/constants';
 
 context('start', () => {
   beforeEach(() => {
@@ -60,9 +62,26 @@ context('start', () => {
     cy.get('[data-testid="warning"]').should('exist').contains('not available');
   });
 
+  it('user needs to fill out form before pressing request-button', () => {
+    cy.get(`[data-testid="library-option-${LIBRARY_CODE_NB_DEP}"]`).click();
+    cy.get(`[data-testid="ncip-request-button"]`).click();
+    cy.get('input:invalid').should('have.length', 1);
+    cy.get(`[data-testid="patron-field"]`).type('someText');
+    cy.get('input:invalid').should('have.length', 0);
+    cy.get(`[data-testid="ncip-request-button"]`).click();
+  });
+
+  it('user sends a unsuccessful NCIP-request', () => {
+    cy.get(`[data-testid="patron-field"]`).type(userIdentifierForNCIPServerError);
+    cy.get(`[data-testid="library-option-${LIBRARY_CODE_NB_DEP}"]`).click();
+    cy.get(`[data-testid="ncip-request-button"]`).click();
+    cy.get('[data-testid="ncip-error-alert"]').should('exist');
+  });
+
   it('user sends a successful NCIP-request', () => {
-    cy.get(`[data-testid="patron-field"]`).type('testuser');
-    cy.get(`[data-testid="library-option-${mockMetadata.libraries[0].library_code}"]`).click();
+    cy.get(`[data-testid="patron-field"]`).type('547839');
+    cy.get(`[data-testid="library-option-${LIBRARY_CODE_NB_DEP}"]`).click();
+    cy.get(`[data-testid="ncip-request-button"]`).click();
     cy.get('[data-testid="ncip-success-alert"]').should('exist');
   });
 });

@@ -150,7 +150,12 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
               </Field>
             </Grid>
             <Grid item xs={12}>
-              <Button disabled={isPostingRequest} variant="contained" type="submit" color="primary">
+              <Button
+                data-testid="ncip-request-button"
+                disabled={isPostingRequest}
+                variant="contained"
+                type="submit"
+                color="primary">
                 Request
               </Button>
             </Grid>

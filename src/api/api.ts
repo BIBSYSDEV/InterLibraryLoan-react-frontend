@@ -20,12 +20,10 @@ export const getLibraryAccess = (libuser: string): Promise<AxiosResponse<Library
 };
 
 export const postNCIPRequest = (request: NCIPRequest): Promise<AxiosResponse<NCIPResponse>> => {
-  //const url = getAsUriParameters(request);
-
   return Axios({
     url: encodeURI(`${API_PATHS.ncip}`),
     method: 'POST',
-    data: { transferMessage: request },
+    data: request,
   });
 };
 
