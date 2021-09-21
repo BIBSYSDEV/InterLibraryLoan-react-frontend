@@ -32,7 +32,6 @@ const App = () => {
   const query = new URLSearchParams(window.location.search);
   const recordId = query.get(SearchParameters.recordid);
   const patronId = query.get(SearchParameters.patronid);
-  const vId = query.get(SearchParameters.vid);
   const [metaData, setMetaData] = useState<MetaData>();
   const [libraryAccess, setLibraryAccess] = useState<LibraryAccess>();
   const [isLoadingAccess, setIsLoadingAccess] = useState(true);
@@ -63,13 +62,13 @@ const App = () => {
         setIsLoadingMetaData(false);
       }
     };
-    if (!recordId || !patronId || !vId) {
-      setAppError(new Error('URL must contain parameters: recordid, patronid and vid'));
+    if (!recordId || !patronId) {
+      setAppError(new Error('URL must contain parameters: recordid and patrondid'));
     } else {
       fetchLibraryAccess().then();
       fetchMetadata().then();
     }
-  }, [recordId, patronId, vId]);
+  }, [recordId, patronId]);
 
   return (
     <>
@@ -79,25 +78,29 @@ const App = () => {
         <StyledFullPageProgressWrapper>
           <CircularProgress />
         </StyledFullPageProgressWrapper>
-      ) : !libraryAccess?.isNCIPLibrary ? (
-        <WarningBanner message="Sorry, this feature is not available. Your institution does not support this ILL functionality" />
+      ) : !libraryAccess?.isNcipLibrary ? (
+        <WarningBanner message="Sorry, this ILL feature is not available. Your library does not support the Norwegian NCIP profile." />
       ) : !isLoadingMetaData ? (
-        metaData && (
-          <PageWrapper>
-            <Typography variant="h1" gutterBottom>
-              Use this form to send ILL-request using NCIP
-            </Typography>
-            <MetadataHolder metaData={metaData} />
-            <OrderSchema metaData={metaData} readonly={libraryAccess.isAlmaLibrary} />
-          </PageWrapper>
+        fetchMetaDataError ? (
+          <ErrorBanner error={fetchMetaDataError} />
+        ) : (
+          metaData && (
+            <PageWrapper>
+              <Typography variant="h1" gutterBottom>
+                Use this form to send ILL-request
+              </Typography>
+              <MetadataHolder metaData={metaData} />
+              {patronId && (
+                <OrderSchema metaData={metaData} patronId={patronId} readonly={libraryAccess.isAlmaLibrary} />
+              )}
+            </PageWrapper>
+          )
         )
       ) : (
         <StyledFullPageProgressWrapper>
           <CircularProgress />
         </StyledFullPageProgressWrapper>
       )}
-
-      {fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}
     </>
   );
 };
