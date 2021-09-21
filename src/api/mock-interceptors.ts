@@ -2,10 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
 import { SearchParameters } from '../types/app.types';
-import { LibraryAccess } from '../types/app.types';
 
 import {
+  mockAlmaLibUser,
   mockedLibraryAccess,
+  mockedLibraryAccessAlmaLibrary,
   mockedLibraryAccessNoNcip,
   mockLibUserThatTriggersServerError,
   mockLibUserWithoutNCIPAccess,
@@ -18,11 +19,6 @@ import {
   mockSRUResponseWithNoItems,
   userIdentifierForNCIPServerError,
 } from './mockdata';
-
-export const mockedLibraryAccessAlmaLibrary: LibraryAccess = {
-  isAlmaLibrary: true,
-  isNCIPLibrary: true,
-};
 
 export const interceptRequestsOnMock = () => {
   const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {

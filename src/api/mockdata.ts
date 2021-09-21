@@ -8,9 +8,9 @@ export const mockMMSIdThatTriggersServerError = '9288276662662233';
 
 export const mockLibUserThatTriggersServerError = '487932849';
 export const mockLibUserWithoutNCIPAccess = '809348204';
+export const mockAlmaLibUser = '64564564';
 
 export const userIdentifierForNCIPServerError = '1234567';
-
 export const mockSRUResponse: SRUResponse = {
   mmsId: '22257098950002203',
   institution: 'NTNU_UB',
@@ -21,13 +21,18 @@ export const mockSRUResponse: SRUResponse = {
 };
 
 export const mockedLibraryAccess: LibraryAccess = {
-  isAlmaLibrary: true,
+  isAlmaLibrary: false,
   isNcipLibrary: true,
 };
 
 export const mockedLibraryAccessNoNcip: LibraryAccess = {
   isAlmaLibrary: true,
   isNcipLibrary: false,
+};
+
+export const mockedLibraryAccessAlmaLibrary: LibraryAccess = {
+  isAlmaLibrary: true,
+  isNcipLibrary: true,
 };
 
 export const mockSRUResponseWithNoItems: SRUResponse = {

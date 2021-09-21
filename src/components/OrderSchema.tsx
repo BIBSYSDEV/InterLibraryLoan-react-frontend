@@ -59,7 +59,7 @@ interface OrderSchemaProps {
   patronId: string;
 }
 
-const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId , readonly = false }) => {
+const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
   const [ncipResponse, setNcipResponse] = useState<NCIPResponse>();
@@ -153,18 +153,19 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId , readonly = fal
             </Grid>
             <Grid item xs={12}>
               {readonly ? (
-                      <WarningBanner message="Alma libraries cannot order ILL, but can only see how the order form is presented." />
-                  ):(
-                  <Button
-                data-testid="ncip-request-button"
-                disabled={isPostingRequest}
-                variant="contained"
-                type="submit"
-                color="primary">
-                Request
-              </Button>
+                <WarningBanner message="Alma libraries cannot order ILL, but can only see how the order form is presented." />
+              ) : (
+                <Button
+                  data-testid="ncip-request-button"
+                  disabled={isPostingRequest}
+                  variant="contained"
+                  type="submit"
+                  color="primary">
+                  Request
+                </Button>
               )}
             </Grid>
+
             <Grid item xs={12}>
               {isPostingRequest ? (
                 <CircularProgress />
