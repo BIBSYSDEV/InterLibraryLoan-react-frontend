@@ -25,6 +25,7 @@ import LibraryLine from './LibraryLine';
 import { postNCIPRequest } from '../api/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Colors } from '../themes/mainTheme';
+import WarningBanner from './WarningBanner';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -54,10 +55,11 @@ const emptySchema: SchemaValues = { patronId: '', selectedLibrary: '' };
 
 interface OrderSchemaProps {
   metaData: MetaData;
+  readonly: boolean;
   patronId: string;
 }
 
-const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
+const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId , readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
   const [ncipResponse, setNcipResponse] = useState<NCIPResponse>();
@@ -150,7 +152,10 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
               </Field>
             </Grid>
             <Grid item xs={12}>
-              <Button
+              {readonly ? (
+                      <WarningBanner message="Alma libraries cannot order ILL, but can only see how the order form is presented." />
+                  ):(
+                  <Button
                 data-testid="ncip-request-button"
                 disabled={isPostingRequest}
                 variant="contained"
@@ -158,6 +163,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId }) => {
                 color="primary">
                 Request
               </Button>
+              )}
             </Grid>
             <Grid item xs={12}>
               {isPostingRequest ? (

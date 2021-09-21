@@ -1,4 +1,5 @@
 import {
+  mockAlmaLibUser,
   mockLibUserThatTriggersServerError,
   mockLibUserWithoutNCIPAccess,
   mockMetadata,
@@ -60,6 +61,11 @@ context('start', () => {
   it('lib_user does not have access to ill', () => {
     cy.visit(`?recordid=123&patronid=${mockLibUserWithoutNCIPAccess}`);
     cy.get('[data-testid="warning"]').should('exist').contains('not available');
+  });
+
+  it('lib_user is alma-library and should get a read-only schema', () => {
+    cy.visit(`/?recordid=123&patronid=${mockAlmaLibUser}&vid=123`);
+    cy.get('[data-testid="warning"]').should('exist').contains('Alma libraries');
   });
 
   it('user needs to fill out form before pressing request-button', () => {

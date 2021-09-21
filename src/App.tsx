@@ -87,7 +87,7 @@ const App = () => {
               Use this form to send ILL-request
             </Typography>
             <MetadataHolder metaData={metaData} />
-            {patronId && <OrderSchema metaData={metaData} patronId={patronId} />}
+            {patronId && <OrderSchema metaData={metaData} patronId={patronId} readonly={libraryAccess.isAlmaLibrary} />}
           </PageWrapper>
         )
       ) : (
