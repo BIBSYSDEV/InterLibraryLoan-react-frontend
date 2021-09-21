@@ -101,8 +101,6 @@ const App = () => {
           <CircularProgress />
         </StyledFullPageProgressWrapper>
       )}
-
-      {/*{fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}*/}
     </>
   );
 };
