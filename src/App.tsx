@@ -81,14 +81,20 @@ const App = () => {
       ) : !libraryAccess?.isNcipLibrary ? (
         <WarningBanner message="Sorry, this ILL feature is not available. Your library does not support the Norwegian NCIP profile." />
       ) : !isLoadingMetaData ? (
-        metaData && (
-          <PageWrapper>
-            <Typography variant="h1" gutterBottom>
-              Use this form to send ILL-request
-            </Typography>
-            <MetadataHolder metaData={metaData} />
-            {patronId && <OrderSchema metaData={metaData} patronId={patronId} readonly={libraryAccess.isAlmaLibrary} />}
-          </PageWrapper>
+        fetchMetaDataError ? (
+          <ErrorBanner error={fetchMetaDataError} />
+        ) : (
+          metaData && (
+            <PageWrapper>
+              <Typography variant="h1" gutterBottom>
+                Use this form to send ILL-request
+              </Typography>
+              <MetadataHolder metaData={metaData} />
+              {patronId && (
+                <OrderSchema metaData={metaData} patronId={patronId} readonly={libraryAccess.isAlmaLibrary} />
+              )}
+            </PageWrapper>
+          )
         )
       ) : (
         <StyledFullPageProgressWrapper>
@@ -96,7 +102,7 @@ const App = () => {
         </StyledFullPageProgressWrapper>
       )}
 
-      {fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}
+      {/*{fetchMetaDataError && <ErrorBanner error={fetchMetaDataError} />}*/}
     </>
   );
 };

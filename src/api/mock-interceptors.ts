@@ -60,7 +60,7 @@ export const interceptRequestsOnMock = () => {
     500,
     null
   );
-  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?${SearchParameters.libuser}.*`, 200, mockedLibraryAccess, 0);
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?${SearchParameters.libuser}.*`, 200, mockedLibraryAccess);
 
   // SRU
   mockGetDelayedAndLogged(
