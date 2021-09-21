@@ -14,6 +14,7 @@ import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import LibraryLine from './LibraryLine';
+import WarningBanner from './WarningBanner';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -42,9 +43,10 @@ const emptySchema: SchemaValues = { patronId: '', selectedLibrary: '' };
 
 interface OrderSchemaProps {
   metaData: MetaData;
+  readonly: boolean;
 }
 
-const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
+const OrderSchema: FC<OrderSchemaProps> = ({ metaData, readonly = false }) => {
   const handleSubmit = (values: SchemaValues) => {
     alert(JSON.stringify(values, null, 2));
   };
@@ -106,9 +108,13 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData }) => {
               </Field>
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" type="submit" color="primary">
-                Request
-              </Button>
+              {readonly ? (
+                <WarningBanner message="Alma libraries cannot order ILL, but can only see how the order form is presented." />
+              ) : (
+                <Button variant="contained" type="submit" color="primary">
+                  Request
+                </Button>
+              )}
             </Grid>
           </StyledGridContainer>
         </Form>

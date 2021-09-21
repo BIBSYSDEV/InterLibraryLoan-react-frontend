@@ -13,13 +13,18 @@ export const mockSRUResponse: SRUResponse = {
 };
 
 export const mockedLibraryAccess: LibraryAccess = {
-  isAlmaLibrary: true,
+  isAlmaLibrary: false,
   isNCIPLibrary: true,
 };
 
 export const mockedLibraryAccessNoNcip: LibraryAccess = {
   isAlmaLibrary: true,
   isNCIPLibrary: false,
+};
+
+export const mockedLibraryAccessAlmaLibrary: LibraryAccess = {
+  isAlmaLibrary: true,
+  isNCIPLibrary: true,
 };
 
 export const mockSRUResponseWithNoItems: SRUResponse = {
@@ -91,6 +96,7 @@ export const mockMMSIdThatTriggersServerError = '9288276662662233';
 
 export const mockLibUserThatTriggersServerError = '487932849';
 export const mockLibUserWithoutNCIPAccess = '809348204';
+export const mockAlmaLibUser = '64564564';
 
 export const interceptRequestsOnMock = () => {
   const mockGetDelayedAndLogged = (pathPattern: string, statusCode: number, mockedResponse: any, delay = 0) => {
@@ -121,9 +127,9 @@ export const interceptRequestsOnMock = () => {
   mockGetDelayedAndLogged(
     `${API_PATHS.libcheck}\\?libuser=${mockLibUserWithoutNCIPAccess}`,
     200,
-    mockedLibraryAccessNoNcip,
-    0
+    mockedLibraryAccessNoNcip
   );
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser=${mockAlmaLibUser}`, 200, mockedLibraryAccessAlmaLibrary);
   mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser=${mockLibUserThatTriggersServerError}`, 500, null);
   mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser.*`, 200, mockedLibraryAccess, 0);
 

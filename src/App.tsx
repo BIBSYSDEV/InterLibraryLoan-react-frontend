@@ -64,7 +64,7 @@ const App = () => {
       }
     };
     if (!recordId || !patronId || !vId) {
-      setAppError(new Error('URL must contain parameters: recordid, patrondid and vid'));
+      setAppError(new Error('URL must contain parameters: recordid, patronid and vid'));
     } else {
       fetchLibraryAccess().then();
       fetchMetadata().then();
@@ -88,7 +88,7 @@ const App = () => {
               Use this form to send ILL-request using NCIP
             </Typography>
             <MetadataHolder metaData={metaData} />
-            <OrderSchema metaData={metaData} />
+            <OrderSchema metaData={metaData} readonly={libraryAccess.isAlmaLibrary} />
           </PageWrapper>
         )
       ) : (
