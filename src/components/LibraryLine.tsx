@@ -21,9 +21,10 @@ interface LibraryLineProps {
 
 export const TEXT = {
   CLOSED: 'Closed for interlibrary loan',
-  NO_ITEM_INFO: 'Ingen eksemplarinformasjon. Kontakt biblioteket',
+  NO_ITEM_INFO: 'No holding information. Contact the library',
   OF: 'of',
   AVAILABLE: 'available',
+  FETCH_SRU_ERROR: 'Could not fetch holdings information',
 };
 
 const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
@@ -47,7 +48,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
         setIsLoadingSRU(false);
       }
     };
-    library && library.available_for_loan && fetchSRU().then();
+    library && library.available_for_loan && library.mms_id && fetchSRU().then();
   }, [library]);
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
             {library.display_name}
           </Typography>
           {fetchSRUError ? (
-            <StyledErrorMessage display="inline">({fetchSRUError.message})</StyledErrorMessage>
+            <StyledErrorMessage display="inline">({TEXT.FETCH_SRU_ERROR})</StyledErrorMessage>
           ) : !library.available_for_loan ? (
             <StyledErrorMessage display="inline">({TEXT.CLOSED})</StyledErrorMessage>
           ) : (
