@@ -42,10 +42,10 @@ context('start', () => {
   });
 
   it('library show server error', () => {
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains('500');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains(TEXT.FETCH_SRU_ERROR);
   });
 
-  it('library show server error', () => {
+  it('library show no info', () => {
     cy.get(`[data-testid="library-label-${mockMetadata.libraries[2].library_code}"]`).contains(TEXT.NO_ITEM_INFO);
   });
 
@@ -88,6 +88,7 @@ context('start', () => {
     cy.get(`[data-testid="patron-field"]`).type('547839');
     cy.get(`[data-testid="library-option-${LIBRARY_CODE_NB_DEP}"]`).click();
     cy.get(`[data-testid="ncip-request-button"]`).click();
+    cy.url().should('include', 'success');
     cy.get('[data-testid="ncip-success-alert"]').should('exist');
   });
 });
