@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { API_PATHS } from '../utils/constants';
-import { SearchParameters } from '../types/app.types';
+import { QueryParameters } from '../types/app.types';
 
 import {
   mockAlmaLibUser,
@@ -42,7 +42,7 @@ export const interceptRequestsOnMock = () => {
 
   // METADATA
   mockGetDelayedAndLogged(
-    `${API_PATHS.metadata}\\?${SearchParameters.documentId}=${mockRecordIdThatTriggersServerError}`,
+    `${API_PATHS.metadata}\\?${QueryParameters.documentId}=${mockRecordIdThatTriggersServerError}`,
     500,
     null
   );
@@ -50,26 +50,26 @@ export const interceptRequestsOnMock = () => {
 
   // LIBCHECK
   mockGetDelayedAndLogged(
-    `${API_PATHS.libcheck}\\?${SearchParameters.libuser}=${mockLibUserWithoutNCIPAccess}`,
+    `${API_PATHS.libcheck}\\?${QueryParameters.libuser}=${mockLibUserWithoutNCIPAccess}`,
     200,
     mockedLibraryAccessNoNcip
   );
   mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?libuser=${mockAlmaLibUser}`, 200, mockedLibraryAccessAlmaLibrary);
   mockGetDelayedAndLogged(
-    `${API_PATHS.libcheck}\\?${SearchParameters.libuser}=${mockLibUserThatTriggersServerError}`,
+    `${API_PATHS.libcheck}\\?${QueryParameters.libuser}=${mockLibUserThatTriggersServerError}`,
     500,
     null
   );
-  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?${SearchParameters.libuser}.*`, 200, mockedLibraryAccess);
+  mockGetDelayedAndLogged(`${API_PATHS.libcheck}\\?${QueryParameters.libuser}.*`, 200, mockedLibraryAccess);
 
   // SRU
   mockGetDelayedAndLogged(
-    `${API_PATHS.sru}\\?${SearchParameters.mms_id}=${mockMMSIdThatTriggersResponseWithNoItems}`,
+    `${API_PATHS.sru}\\?${QueryParameters.mms_id}=${mockMMSIdThatTriggersResponseWithNoItems}`,
     200,
     mockSRUResponseWithNoItems
   );
   mockGetDelayedAndLogged(
-    `${API_PATHS.sru}\\?${SearchParameters.mms_id}=${mockMMSIdThatTriggersServerError}`,
+    `${API_PATHS.sru}\\?${QueryParameters.mms_id}=${mockMMSIdThatTriggersServerError}`,
     500,
     null
   );

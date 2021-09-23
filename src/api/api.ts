@@ -1,20 +1,20 @@
 import Axios, { AxiosResponse } from 'axios';
 import { setAxiosDefaults } from '../utils/axios-config';
 import { API_PATHS } from '../utils/constants';
-import { LibraryAccess, MetaData, NCIPRequest, NCIPResponse, SearchParameters, SRUResponse } from '../types/app.types';
+import { LibraryAccess, MetaData, NCIPRequest, NCIPResponse, QueryParameters, SRUResponse } from '../types/app.types';
 
 setAxiosDefaults();
 
 export const getMetadata = (recordId: string): Promise<AxiosResponse<MetaData>> => {
   return Axios({
-    url: encodeURI(`${API_PATHS.metadata}?${SearchParameters.documentId}=${recordId}`),
+    url: encodeURI(`${API_PATHS.metadata}?${QueryParameters.documentId}=${recordId}`),
     method: 'GET',
   });
 };
 
 export const getLibraryAccess = (libuser: string): Promise<AxiosResponse<LibraryAccess>> => {
   return Axios({
-    url: encodeURI(`${API_PATHS.libcheck}?${SearchParameters.libuser}=${libuser}`),
+    url: encodeURI(`${API_PATHS.libcheck}?${QueryParameters.libuser}=${libuser}`),
     method: 'GET',
   });
 };
@@ -34,7 +34,7 @@ export const getSRU = (
 ): Promise<AxiosResponse<SRUResponse>> => {
   return Axios({
     url: encodeURI(
-      `${API_PATHS.sru}?${SearchParameters.mms_id}=${mmsId}&${SearchParameters.institution}=${institution}&${SearchParameters.libraryCode}=${libraryCode}&recordSchema=isohold`
+      `${API_PATHS.sru}?${QueryParameters.mms_id}=${mmsId}&${QueryParameters.institution}=${institution}&${QueryParameters.libraryCode}=${libraryCode}&recordSchema=isohold`
     ),
     method: 'GET',
   });

@@ -47,7 +47,7 @@ export enum BibliographicRecordIdentifierCodes {
   OwnerLocalRecordID = 'OwnerLocalRecordID',
 }
 
-export enum SearchParameters {
+export enum QueryParameters {
   libuser = 'libuser',
   mms_id = 'mms_id',
   institution = 'institution',
@@ -56,6 +56,7 @@ export enum SearchParameters {
   documentId = 'document_id',
   patronid = 'patronid',
   vid = 'vid',
+  message = 'message',
 }
 
 export interface NCIPRequest {

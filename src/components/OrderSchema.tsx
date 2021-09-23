@@ -1,10 +1,11 @@
 import React, { FC, useState } from 'react';
 import {
   BibliographicRecordIdentifierCodes,
+  Library,
   MediaTypes,
   MetaData,
   NCIPRequest,
-  NCIPResponse,
+  QueryParameters,
   RequestTypes,
 } from '../types/app.types';
 import {
@@ -26,6 +27,7 @@ import { postNCIPRequest } from '../api/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Colors } from '../themes/mainTheme';
 import WarningBanner from './WarningBanner';
+import { useHistory } from 'react-router';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -39,6 +41,10 @@ const StyledFormLabelTypography = styled(Typography)`
 
 const StyledHelperMessage = styled(Typography)`
   margin-left: 1rem;
+`;
+
+const StyledAlert = styled(Alert)`
+  margin-bottom: 1rem;
 `;
 
 const StyledTextFieldWrapper = styled.div`
@@ -59,13 +65,17 @@ interface OrderSchemaProps {
   patronId: string;
 }
 
+const createSuccessMessage = (metaData: MetaData, selectedLibrary: Library, patronId: string) => {
+  return `The request for '${metaData.display_title}' was sent successfully to ${selectedLibrary.display_name} for ${patronId} `;
+};
+
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
-  const [ncipResponse, setNcipResponse] = useState<NCIPResponse>();
+  const history = useHistory();
 
   const handleSubmit = async (values: SchemaValues) => {
-    const selectedLibrary = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
+    const selectedLibrary: Library = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
     const ncipRequest: NCIPRequest = {
       toAgencyId: patronId,
       fromAgencyId: selectedLibrary.library_code,
@@ -86,8 +96,10 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
     try {
       setIsPostingRequest(true);
       setPostRequestError(undefined);
-      const response: NCIPResponse = (await postNCIPRequest(ncipRequest)).data;
-      setNcipResponse(response);
+      await postNCIPRequest(ncipRequest);
+      history.push(
+        `/success?${QueryParameters.message}=${createSuccessMessage(metaData, selectedLibrary, values.patronId)}`
+      );
     } catch (error) {
       error instanceof Error && setPostRequestError(error);
     } finally {
@@ -96,9 +108,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
   };
 
   const ValidationSchema = Yup.object().shape({
-    patronId: Yup.string()
-      .min(3, 'Recipient (Patron ID) should be at least 3 characters long')
-      .required('Recipient is a required value'),
+    patronId: Yup.string().required('Recipient is a required value'),
     selectedLibrary: Yup.string().required('A library is required to be selected'),
   });
 
@@ -155,30 +165,26 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
               {readonly ? (
                 <WarningBanner message="Alma libraries cannot order ILL, but can only see how the order form is presented." />
               ) : (
-                <Button
-                  data-testid="ncip-request-button"
-                  disabled={isPostingRequest}
-                  variant="contained"
-                  type="submit"
-                  color="primary">
-                  Request
-                </Button>
-              )}
-            </Grid>
-
-            <Grid item xs={12}>
-              {isPostingRequest ? (
-                <CircularProgress />
-              ) : ncipResponse ? (
-                <Alert severity="success" data-testid="ncip-success-alert">
-                  <AlertTitle>{ncipResponse.message}</AlertTitle>
-                </Alert>
-              ) : (
-                postRequestError && (
-                  <Alert severity="error" data-testid="ncip-error-alert">
-                    <AlertTitle>{postRequestError.message}</AlertTitle>
-                  </Alert>
-                )
+                <>
+                  {isPostingRequest ? (
+                    <CircularProgress />
+                  ) : (
+                    postRequestError && (
+                      <StyledAlert severity="error" data-testid="ncip-error-alert">
+                        <AlertTitle>An error has occurred</AlertTitle>
+                        <Typography variant="caption">( Error message: {postRequestError.message})</Typography>
+                      </StyledAlert>
+                    )
+                  )}
+                  <Button
+                    data-testid="ncip-request-button"
+                    disabled={isPostingRequest}
+                    variant="contained"
+                    type="submit"
+                    color="primary">
+                    Request
+                  </Button>
+                </>
               )}
             </Grid>
           </StyledGridContainer>
