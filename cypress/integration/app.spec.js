@@ -6,7 +6,6 @@ import {
   mockRecordIdThatTriggersServerError,
   userIdentifierForNCIPServerError,
 } from '../../src/api/mockdata';
-import { TEXT } from '../../src/components/LibraryLine';
 import { LIBRARY_CODE_NB_DEP } from '../../src/utils/constants';
 
 context('start', () => {
@@ -38,19 +37,19 @@ context('start', () => {
   });
 
   it('library show holdings', () => {
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[0].library_code}"]`).contains('1 of 1 available');
+    cy.get(`[data-testid="library-label-${mockMetadata.libraries[0].library_code}"]`).contains('1 of 1');
   });
 
   it('library show server error', () => {
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[5].library_code}"]`).contains('500');
+    cy.get(`[data-testid="error-sru-for-${mockMetadata.libraries[5].library_code}"]`).should('exist');
   });
 
-  it('library show server error', () => {
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[2].library_code}"]`).contains(TEXT.NO_ITEM_INFO);
+  it('library show no info', () => {
+    cy.get(`[data-testid="error-no-item-for-${mockMetadata.libraries[2].library_code}"]`).should('exist');
   });
 
   it('library show closed', () => {
-    cy.get(`[data-testid="library-label-${mockMetadata.libraries[1].library_code}"]`).contains(TEXT.CLOSED);
+    cy.get(`[data-testid="error-closed-for-${mockMetadata.libraries[1].library_code}"]`).should('exist');
   });
 
   it('lib_user-access-api shows servererror', () => {
@@ -88,6 +87,7 @@ context('start', () => {
     cy.get(`[data-testid="patron-field"]`).type('547839');
     cy.get(`[data-testid="library-option-${LIBRARY_CODE_NB_DEP}"]`).click();
     cy.get(`[data-testid="ncip-request-button"]`).click();
+    cy.url().should('include', 'success');
     cy.get('[data-testid="ncip-success-alert"]').should('exist');
   });
 });

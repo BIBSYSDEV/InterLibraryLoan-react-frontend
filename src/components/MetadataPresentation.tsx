@@ -45,10 +45,10 @@ const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
   <StyledMetadataHolder data-testid="metaData">
     <MetadataLine label={'Title'} value={metaData.display_title} />
     <MetadataLine label={'Creator'} value={metaData.creator} />
-    {metaData.isbn && <MetadataLine label={'Standard number'} value={metaData.isbn} />}
+    <MetadataLine label={'Standard number'} value={metaData.isbn} />
     {metaData.source && <MetadataLine label={'Source'} value={metaData.source} />}
     {metaData.volume && <MetadataLine label={'Volume'} value={metaData.volume} />}
-    {metaData.pages && <MetadataLine label={'Volume'} value={metaData.pages} />}
+    {metaData.pages && <MetadataLine label={'Pages'} value={metaData.pages} />}
     {metaData.creation_year && <MetadataLine label={'Year'} value={metaData.creation_year} />}
     {metaData.publisher && <MetadataLine label={'Publisher'} value={metaData.publisher} />}
     {metaData.publication_place && <MetadataLine label={'Place of publication'} value={metaData.publication_place} />}

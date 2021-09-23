@@ -50,7 +50,7 @@ export const mockNCIPResponse: NCIPResponse = {
 
 export const mockMetadata: MetaData = {
   record_id: '85899034',
-  display_title: 'Some display title',
+  display_title: 'This is a sample title',
   creation_year: '1984',
   volume: '234',
   pages: '233424',
