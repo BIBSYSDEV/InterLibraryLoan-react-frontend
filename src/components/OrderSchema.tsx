@@ -1,9 +1,11 @@
 import React, { FC, useState } from 'react';
 import {
   BibliographicRecordIdentifierCodes,
+  Library,
   MediaTypes,
   MetaData,
   NCIPRequest,
+  QueryParameters,
   RequestTypes,
 } from '../types/app.types';
 import {
@@ -63,13 +65,17 @@ interface OrderSchemaProps {
   patronId: string;
 }
 
+const createSuccessMessage = (metaData: MetaData, selectedLibrary: Library, patronId: string) => {
+  return `The request for '${metaData.display_title}' was sent successfully to ${selectedLibrary.display_name} for ${patronId} `;
+};
+
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
   const history = useHistory();
 
   const handleSubmit = async (values: SchemaValues) => {
-    const selectedLibrary = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
+    const selectedLibrary: Library = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
     const ncipRequest: NCIPRequest = {
       toAgencyId: patronId,
       fromAgencyId: selectedLibrary.library_code,
@@ -91,7 +97,9 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
       setIsPostingRequest(true);
       setPostRequestError(undefined);
       await postNCIPRequest(ncipRequest);
-      history.push('/success');
+      history.push(
+        `/success?${QueryParameters.message}=${createSuccessMessage(metaData, selectedLibrary, values.patronId)}`
+      );
     } catch (error) {
       error instanceof Error && setPostRequestError(error);
     } finally {

@@ -3,7 +3,7 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import { getLibraryAccess, getMetadata } from './api/api';
 import ErrorBanner from './components/ErrorBanner';
 import styled from 'styled-components';
-import { LibraryAccess, MetaData, SearchParameters } from './types/app.types';
+import { LibraryAccess, MetaData, QueryParameters } from './types/app.types';
 import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 import WarningBanner from './components/WarningBanner';
@@ -30,8 +30,8 @@ export const StyledPageTitleTypography = styled(Typography)`
 
 const AppContent = () => {
   const query = new URLSearchParams(window.location.search);
-  const recordId = query.get(SearchParameters.recordid);
-  const patronId = query.get(SearchParameters.patronid);
+  const recordId = query.get(QueryParameters.recordid);
+  const patronId = query.get(QueryParameters.patronid);
   const [metaData, setMetaData] = useState<MetaData>();
   const [libraryAccess, setLibraryAccess] = useState<LibraryAccess>();
   const [isLoadingAccess, setIsLoadingAccess] = useState(true);

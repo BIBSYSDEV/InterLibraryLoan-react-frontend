@@ -19,14 +19,6 @@ interface LibraryLineProps {
   library: Library;
 }
 
-export const TEXT = {
-  CLOSED: 'Closed for interlibrary loan',
-  NO_ITEM_INFO: 'No holding information. Contact the library',
-  OF: 'of',
-  AVAILABLE: 'available',
-  FETCH_SRU_ERROR: 'Could not fetch holdings information',
-};
-
 const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
   const [isLoadingSRU, setIsLoadingSRU] = useState(false);
   const [fetchSRUError, setFetchSRUError] = useState<Error>();
@@ -81,22 +73,26 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
             {library.display_name}
           </Typography>
           {fetchSRUError ? (
-            <StyledErrorMessage display="inline">({TEXT.FETCH_SRU_ERROR})</StyledErrorMessage>
+            <StyledErrorMessage data-testid={`error-sru-for-${library.library_code}`} display="inline">
+              (Could not fetch holdings information)
+            </StyledErrorMessage>
           ) : !library.available_for_loan ? (
-            <StyledErrorMessage display="inline">({TEXT.CLOSED})</StyledErrorMessage>
+            <StyledErrorMessage data-testid={`error-closed-for-${library.library_code}`} display="inline">
+              (Closed for interlibrary loan)
+            </StyledErrorMessage>
           ) : (
             !isLoadingSRU &&
             (totalNumberOfItems === 0 && numberAvailForInterLibraryLoan === 0 ? (
-              <StyledErrorMessage display="inline">({TEXT.NO_ITEM_INFO})</StyledErrorMessage>
+              <StyledErrorMessage data-testid={`error-no-item-for-${library.library_code}`} display="inline">
+                (No holding information. Contact the library)
+              </StyledErrorMessage>
             ) : totalNumberOfItems > 0 &&
               numberAvailForInterLibraryLoan === 0 &&
               !LIBRARY_CODES_ALWAYS_ACCESSIBLE_FOR_LOAN.includes(library.library_code) ? (
-              <StyledErrorMessage display="inline">
-                (0 {TEXT.OF} {totalNumberOfItems} {TEXT.AVAILABLE})
-              </StyledErrorMessage>
+              <StyledErrorMessage display="inline">(0 of {totalNumberOfItems} available)</StyledErrorMessage>
             ) : (
               <StyledHoldingsInfo display="inline">
-                ({numberAvailForInterLibraryLoan} {TEXT.OF} {totalNumberOfItems} {TEXT.AVAILABLE})
+                ({numberAvailForInterLibraryLoan} of {totalNumberOfItems} available)
               </StyledHoldingsInfo>
             ))
           )}
