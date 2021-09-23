@@ -8,7 +8,6 @@ import { LIBRARY_CODES_ALWAYS_ACCESSIBLE_FOR_LOAN } from '../utils/constants';
 
 const StyledErrorMessage = styled(Typography)`
   margin-left: 0.3rem;
-  color: ${Colors.Warning};
 `;
 
 const StyledHoldingsInfo = styled(Typography)`
@@ -78,7 +77,7 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
           <Typography
             display="inline"
             style={isDisabled ? { color: Colors.DisabledText } : { color: Colors.PrimaryText }}>
-            {library.library_name}
+            {library.display_name}
           </Typography>
           {fetchSRUError ? (
             <StyledErrorMessage display="inline">({fetchSRUError.message})</StyledErrorMessage>
