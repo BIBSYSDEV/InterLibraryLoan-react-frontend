@@ -11,6 +11,7 @@ export enum Colors {
   PrimaryText = 'rgb(50,50,50)',
   DisabledText = 'rgb(150,150,150)',
   Warning = 'rgba(147, 10, 10, 1)',
+  EnhancedRadioFocusBackground = 'rgba(99, 34, 107, 0.15)',
 }
 
 export default createTheme({
@@ -49,6 +50,13 @@ export default createTheme({
     MuiInputBase: {
       root: {
         background: Colors.Background,
+      },
+    },
+    MuiRadio: {
+      root: {
+        '&:hover, &:active': {
+          background: Colors.EnhancedRadioFocusBackground,
+        },
       },
     },
   },
