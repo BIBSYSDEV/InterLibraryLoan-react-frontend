@@ -46,7 +46,6 @@ const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
     <MetadataLine label={'Title'} value={metaData.display_title} />
     <MetadataLine label={'Creator'} value={metaData.creator} />
     <MetadataLine label={'Standard number'} value={metaData.isbn} />
-    {metaData.source && <MetadataLine label={'Source'} value={metaData.source} />}
     {metaData.volume && <MetadataLine label={'Volume'} value={metaData.volume} />}
     {metaData.pages && <MetadataLine label={'Pages'} value={metaData.pages} />}
     {metaData.creation_year && <MetadataLine label={'Year'} value={metaData.creation_year} />}

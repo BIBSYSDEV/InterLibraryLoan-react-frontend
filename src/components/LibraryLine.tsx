@@ -9,10 +9,18 @@ import { LIBRARY_CODES_ALWAYS_ACCESSIBLE_FOR_LOAN } from '../utils/constants';
 const StyledErrorMessage = styled(Typography)`
   margin-left: 0.3rem;
 `;
+const StyledFormControlLabel = styled(FormControlLabel)`
+  .PrivateSwitchBase-root-1 {
+    padding: 5px;
+  }
+`;
 
 const StyledHoldingsInfo = styled(Typography)`
   margin-left: 0.3rem;
   font-weight: 600;
+`;
+const StyledRadio = styled(Radio)`
+  margin-right: 0.4rem;
 `;
 
 interface LibraryLineProps {
@@ -55,14 +63,14 @@ const LibraryLine: FC<LibraryLineProps> = ({ library }) => {
   }, [library, fetchSRUError, isLoadingSRU, numberAvailForInterLibraryLoan, totalNumberOfItems]);
 
   return (
-    <FormControlLabel
+    <StyledFormControlLabel
       disabled={isDisabled}
       value={library.library_code}
       control={
         isLoadingSRU ? (
-          <Radio icon={isLoadingSRU && <CircularProgress size="1.5rem" />} />
+          <StyledRadio icon={isLoadingSRU && <CircularProgress size="1.5rem" />} />
         ) : (
-          <Radio data-testid={`library-option-${library.library_code}`} required={true} color="primary" />
+          <StyledRadio data-testid={`library-option-${library.library_code}`} required={true} color="primary" />
         )
       }
       label={

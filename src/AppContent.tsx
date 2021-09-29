@@ -3,7 +3,7 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import { getLibraryAccess, getMetadata } from './api/api';
 import ErrorBanner from './components/ErrorBanner';
 import styled from 'styled-components';
-import { LibraryAccess, MetaData, QueryParameters } from './types/app.types';
+import { Library, LibraryAccess, MetaData, QueryParameters } from './types/app.types';
 import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 import WarningBanner from './components/WarningBanner';
@@ -28,6 +28,8 @@ export const StyledPageTitleTypography = styled(Typography)`
   width: 100%;
 `;
 
+const BEVLibrary = '0183334';
+
 const AppContent = () => {
   const query = new URLSearchParams(window.location.search);
   const recordId = query.get(QueryParameters.recordid);
@@ -38,6 +40,14 @@ const AppContent = () => {
   const [isLoadingMetaData, setIsLoadingMetaData] = useState(false);
   const [appError, setAppError] = useState<Error>();
   const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
+
+  const cleanUpCreators = (creators: string) => {
+    return creators.split('$$Q')[0];
+  };
+
+  const cleanUpLibraries = (libraries: Library[]) => {
+    return libraries.filter((library) => library.library_code !== BEVLibrary);
+  };
 
   useEffect(() => {
     const fetchLibraryAccess = async () => {
@@ -55,7 +65,12 @@ const AppContent = () => {
       try {
         setIsLoadingMetaData(true);
         setFetchMetaDataError(undefined);
-        recordId && setMetaData((await getMetadata(recordId)).data);
+        if (recordId) {
+          const response: MetaData = (await getMetadata(recordId)).data;
+          response.creator = cleanUpCreators(response.creator);
+          response.libraries = cleanUpLibraries(response.libraries);
+          recordId && setMetaData(response);
+        }
       } catch (error) {
         error instanceof Error && setFetchMetaDataError(error);
       } finally {
