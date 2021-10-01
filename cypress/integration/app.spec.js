@@ -17,11 +17,11 @@ context('start', () => {
     cy.get('[data-testid="metaData"]').contains('Creator');
     cy.get('[data-testid="metaData"]').contains(mockMetadata.display_title);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.creation_year);
-    cy.get('[data-testid="metaData"]').contains(mockMetadata.creator.substring(0, 20));
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publication_place);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.isbn);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.volume);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publisher);
+    cy.get('[data-testid="creators"]').should('have.text', 'Per Bjarne Ytre-Arne, Børre Børresen'); //data is manipulated
     cy.get('[data-testid="alert"]').should('not.exist');
   });
 

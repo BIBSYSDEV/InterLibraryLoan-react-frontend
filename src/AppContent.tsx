@@ -42,7 +42,7 @@ const AppContent = () => {
   const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
 
   const cleanUpCreators = (creators: string) => {
-    return creators.split('$$Q')[0];
+    return creators.split('$$Q')[0].trim();
   };
 
   const cleanUpLibraries = (libraries: Library[]) => {

@@ -126,7 +126,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
               <Field name="selectedLibrary">
                 {({ field, meta: { error } }: FieldProps) => (
                   <FormControl required component="fieldset" data-test>
-                    <FormLabel component="legend">
+                    <FormLabel component="legend" id="libraries-label">
                       <StyledFormLabelTypography display="inline" gutterBottom variant="body1">
                         Choose Library:
                       </StyledFormLabelTypography>
@@ -135,7 +135,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
                     <RadioGroup
                       {...field}
                       data-testid="library-list"
-                      aria-label="Library"
+                      aria-labelledby="libraries-label"
                       name="selectedLibrary"
                       value={field.value}>
                       {metaData.libraries.map((library) => (
