@@ -28,12 +28,15 @@ const StyledValue = styled(Typography)`
 interface MetadataLineProps {
   label: string;
   value: string;
+  dataTestId?: string;
 }
 
-const MetadataLine: FC<MetadataLineProps> = ({ label, value }) => (
+const MetadataLine: FC<MetadataLineProps> = ({ label, value, dataTestId }) => (
   <StyledRow>
     <StyledLabel variant="body1">{label}</StyledLabel>
-    <StyledValue variant="body1">{value}</StyledValue>
+    <StyledValue data-testid={dataTestId} variant="body1">
+      {value}
+    </StyledValue>
   </StyledRow>
 );
 
@@ -44,9 +47,8 @@ interface MetadataHolderProps {
 const MetadataHolder: FC<MetadataHolderProps> = ({ metaData }) => (
   <StyledMetadataHolder data-testid="metaData">
     <MetadataLine label={'Title'} value={metaData.display_title} />
-    <MetadataLine label={'Creator'} value={metaData.creator} />
+    <MetadataLine dataTestId="creators" label={'Creators'} value={metaData.creator} />
     <MetadataLine label={'Standard number'} value={metaData.isbn} />
-    {metaData.source && <MetadataLine label={'Source'} value={metaData.source} />}
     {metaData.volume && <MetadataLine label={'Volume'} value={metaData.volume} />}
     {metaData.pages && <MetadataLine label={'Pages'} value={metaData.pages} />}
     {metaData.creation_year && <MetadataLine label={'Year'} value={metaData.creation_year} />}

@@ -17,18 +17,39 @@ context('start', () => {
     cy.get('[data-testid="metaData"]').contains('Creator');
     cy.get('[data-testid="metaData"]').contains(mockMetadata.display_title);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.creation_year);
-    cy.get('[data-testid="metaData"]').contains(mockMetadata.creator);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publication_place);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.isbn);
-    cy.get('[data-testid="metaData"]').contains(mockMetadata.source);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.volume);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publisher);
+    cy.get('[data-testid="creators"]').should('have.text', 'Per Bjarne Ytre-Arne, Børre Børresen'); //data is manipulated
     cy.get('[data-testid="alert"]').should('not.exist');
+  });
+
+  it('shows errormessage when parameters is missing', () => {
+    cy.visit('?recordid=123');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.visit('?patronid=123');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.visit('?recordid=123&patronid=');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.visit('');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+  });
+
+  it('metadata is cleaned up', () => {
+    cy.get('[data-testid="metaData"]').should('not.contain', '$$Q');
+    cy.get('[data-testid="metaData"]').should('not.contain', 'Bjart');
+    cy.get('[data-testid="library-list"]').should('not.contain', 'Pliktavlevering');
   });
 
   it('shows errormessage when metadata-server responds with error', () => {
     cy.visit(`?recordid=${mockRecordIdThatTriggersServerError}&patronid=123`);
     cy.get('[data-testid="alert"]').should('exist').contains('500');
+  });
+
+  it('shows errorpage when url is wrong', () => {
+    cy.visit('/non_existing_route');
+    cy.get('[data-testid="404"]').should('exist').contains('404');
   });
 
   it('shows schema', () => {
