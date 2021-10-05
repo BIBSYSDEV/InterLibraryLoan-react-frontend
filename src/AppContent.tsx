@@ -28,6 +28,7 @@ export const StyledPageTitleTypography = styled(Typography)`
   width: 100%;
 `;
 
+//Bev = Bevaringssamling at NB. It is possible to order even when they don't have the book available.
 const BEVLibrary = '0183334';
 
 const AppContent = () => {
