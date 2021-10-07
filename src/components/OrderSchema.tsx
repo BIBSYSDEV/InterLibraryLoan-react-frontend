@@ -116,7 +116,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
     <Formik onSubmit={handleSubmit} initialValues={emptySchema} validationSchema={ValidationSchema}>
       {() => (
         <Form>
-          <StyledGridContainer container spacing={4}>
+          <StyledGridContainer container spacing={3}>
             <Grid item xs={12}>
               <Typography variant="caption" aria-hidden="true">
                 Mandatory fields are marked with *
@@ -126,13 +126,18 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
               <Field name="selectedLibrary">
                 {({ field, meta: { error } }: FieldProps) => (
                   <FormControl required component="fieldset" data-test>
-                    <FormLabel component="legend">
+                    <FormLabel component="legend" id="libraries-label">
                       <StyledFormLabelTypography display="inline" gutterBottom variant="body1">
                         Choose Library:
                       </StyledFormLabelTypography>
                     </FormLabel>
                     <FormHelperText error>{error}</FormHelperText>
-                    <RadioGroup {...field} aria-label="Library" name="selectedLibrary" value={field.value}>
+                    <RadioGroup
+                      {...field}
+                      data-testid="library-list"
+                      aria-labelledby="libraries-label"
+                      name="selectedLibrary"
+                      value={field.value}>
                       {metaData.libraries.map((library) => (
                         <LibraryLine key={library.library_code} library={library} />
                       ))}
