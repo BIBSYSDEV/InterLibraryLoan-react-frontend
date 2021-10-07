@@ -3,8 +3,6 @@ version: 0.2
 
 env:
   shell: bash
-  parameter-store:
-    ENVIRONMENT: environment
 
 phases:
   install:
@@ -29,11 +27,6 @@ phases:
       - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
       - env
-      - |
-        if [ "$ENVIRONMENT" = "test" ]; then
-          wget https://github.com/BIBSYSDEV/bibliotekstjenester-test/archive/refs/heads/SMILE-1005-cypress-end-2-end-tests.zip
-          unzip SMILE-1005-cypress-end-2-end-tests.zip
-        fi
       - node -v
       - aws --version
       - cfn-lint -v
@@ -53,11 +46,6 @@ phases:
       - echo Building Node app...
       - npm run build
       - npm run test:cypress
-      - |
-        if [ "$ENVIRONMENT" = "test" ]; then
-          cd InterLibraryLoan/cypress
-          npm test
-        fi
 
   post_build:
     commands:
