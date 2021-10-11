@@ -27,13 +27,13 @@ context('start', () => {
 
   it('shows errormessage when parameters is missing', () => {
     cy.visit('?recordid=123');
-    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
     cy.visit('?patronid=123');
-    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
     cy.visit('?recordid=123&patronid=');
-    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
     cy.visit('');
-    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patrondid');
+    cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
   });
 
   it('metadata is cleaned up', () => {

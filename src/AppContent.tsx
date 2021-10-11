@@ -79,7 +79,7 @@ const AppContent = () => {
       }
     };
     if (!recordId || !patronId) {
-      setAppError(new Error('URL must contain parameters: recordid and patrondid'));
+      setAppError(new Error('URL must contain parameters: recordid and patronid'));
     } else {
       fetchLibraryAccess().then();
       fetchMetadata().then();
@@ -94,7 +94,7 @@ const AppContent = () => {
         <StyledFullPageProgressWrapper>
           <CircularProgress />
         </StyledFullPageProgressWrapper>
-      ) : !libraryAccess?.isNcipLibrary ? (
+      ) : !libraryAccess?.ncip_server_url ? (
         <WarningBanner message="Sorry, this ILL feature is not available. Your library does not support the Norwegian NCIP profile." />
       ) : !isLoadingMetaData ? (
         fetchMetaDataError ? (
@@ -107,7 +107,12 @@ const AppContent = () => {
               </Typography>
               <MetadataHolder metaData={metaData} />
               {patronId && (
-                <OrderSchema metaData={metaData} patronId={patronId} readonly={libraryAccess.isAlmaLibrary} />
+                <OrderSchema
+                  metaData={metaData}
+                  patronId={patronId}
+                  ncip_server_url={libraryAccess.ncip_server_url}
+                  readonly={libraryAccess.isAlmaLibrary}
+                />
               )}
             </PageWrapper>
           )

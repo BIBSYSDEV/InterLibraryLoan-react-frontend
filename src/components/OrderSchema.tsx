@@ -55,21 +55,23 @@ const StyledTextFieldWrapper = styled.div`
 interface SchemaValues {
   patronId: string;
   selectedLibrary: string;
+  ncip_server_url: string;
 }
 
-const emptySchema: SchemaValues = { patronId: '', selectedLibrary: '' };
+const emptySchema: SchemaValues = { patronId: '', ncip_server_url: '', selectedLibrary: '' };
 
 interface OrderSchemaProps {
   metaData: MetaData;
   readonly: boolean;
   patronId: string;
+  ncip_server_url: string;
 }
 
 const createSuccessMessage = (metaData: MetaData, selectedLibrary: Library, patronId: string) => {
   return `The request for '${metaData.display_title}' was sent successfully to ${selectedLibrary.display_name} for ${patronId} `;
 };
 
-const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = false }) => {
+const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, ncip_server_url, readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
   const history = useHistory();
@@ -91,7 +93,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, readonly = fals
       type: MediaTypes.Book,
       requestType: RequestTypes.Physical,
       comment: '',
-      ncipServerUrl: selectedLibrary.ncip_server_url,
+      ncipServerUrl: ncip_server_url,
     };
     try {
       setIsPostingRequest(true);
