@@ -22,17 +22,17 @@ export const mockSRUResponse: SRUResponse = {
 
 export const mockedLibraryAccess: LibraryAccess = {
   isAlmaLibrary: false,
-  isNcipLibrary: true,
+  ncip_server_url: 'ncip_server_url',
 };
 
 export const mockedLibraryAccessNoNcip: LibraryAccess = {
   isAlmaLibrary: true,
-  isNcipLibrary: false,
+  ncip_server_url: '',
 };
 
 export const mockedLibraryAccessAlmaLibrary: LibraryAccess = {
   isAlmaLibrary: true,
-  isNcipLibrary: true,
+  ncip_server_url: 'ncip_server_url',
 };
 
 export const mockSRUResponseWithNoItems: SRUResponse = {
@@ -66,7 +66,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: true,
       institution_code: 'NB_DEP',
       mms_id: '9288276ff6656',
-      ncip_server_url: 'http://www.example.com',
     },
     {
       display_name: 'NINA Biblioteket',
@@ -74,7 +73,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626654',
-      ncip_server_url: 'https://www.example.com',
     },
     {
       display_name: 'NTNU Universitetsbiblioteket Gunnerusbiblioteket',
@@ -82,7 +80,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: true,
       institution_code: 'UIT',
       mms_id: '92882766626651',
-      ncip_server_url: 'https://www.example.com',
     },
     {
       display_name: 'UiT Norges arktiske universitet Narvikbiblioteket',
@@ -90,7 +87,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: false,
       institution_code: 'UIT',
       mms_id: '92882766626612',
-      ncip_server_url: 'https://www.example.com',
     },
     {
       display_name: 'Universitetsbiblioteket i Bergen Bibliotek for matematisk- naturvitenskapelige fag',
@@ -98,7 +94,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: true,
       institution_code: 'UIB',
       mms_id: '92882766626623',
-      ncip_server_url: 'https://www.example.com',
     },
 
     {
@@ -107,7 +102,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: true,
       institution_code: 'UIB',
       mms_id: '9288276662662233',
-      ncip_server_url: 'https://www.example.com',
     },
     {
       display_name: 'Nasjonalbiblioteket Pliktavlevering',
@@ -115,7 +109,6 @@ export const mockMetadata: MetaData = {
       available_for_loan: true,
       institution_code: 'UIB',
       mms_id: '92882766626623',
-      ncip_server_url: 'https://www.example.com',
     },
   ],
 };

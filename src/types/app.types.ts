@@ -18,7 +18,6 @@ export interface Library {
   institution_code: string;
   library_code: string;
   mms_id: string;
-  ncip_server_url: string;
 }
 
 export interface SRUResponse {
@@ -31,7 +30,7 @@ export interface SRUResponse {
 }
 
 export interface LibraryAccess {
-  isNcipLibrary: boolean;
+  ncip_server_url: string;
   isAlmaLibrary: boolean;
 }
 
