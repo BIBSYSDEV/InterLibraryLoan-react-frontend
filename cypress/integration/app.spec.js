@@ -21,7 +21,7 @@ context('start', () => {
     cy.get('[data-testid="metaData"]').contains(mockMetadata.isbn);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.volume);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publisher);
-    cy.get('[data-testid="creators"]').should('have.text', 'Per Bjarne Ytre-Arne, Børre Børresen'); //data is manipulated
+    cy.get('[data-testid="metaData"]').contains(mockMetadata.creator);
     cy.get('[data-testid="alert"]').should('not.exist');
   });
 
