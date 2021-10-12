@@ -36,12 +36,6 @@ context('start', () => {
     cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
   });
 
-  it('metadata is cleaned up', () => {
-    cy.get('[data-testid="metaData"]').should('not.contain', '$$Q');
-    cy.get('[data-testid="metaData"]').should('not.contain', 'Bjart');
-    cy.get('[data-testid="library-list"]').should('not.contain', 'Pliktavlevering');
-  });
-
   it('shows errormessage when metadata-server responds with error', () => {
     cy.visit(`?recordid=${mockRecordIdThatTriggersServerError}&patronid=123`);
     cy.get('[data-testid="alert"]').should('exist').contains('500');
