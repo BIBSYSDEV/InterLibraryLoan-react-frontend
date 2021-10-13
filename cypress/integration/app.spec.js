@@ -21,7 +21,7 @@ context('start', () => {
     cy.get('[data-testid="metaData"]').contains(mockMetadata.isbn);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.volume);
     cy.get('[data-testid="metaData"]').contains(mockMetadata.publisher);
-    cy.get('[data-testid="creators"]').should('have.text', 'Per Bjarne Ytre-Arne, Børre Børresen'); //data is manipulated
+    cy.get('[data-testid="metaData"]').contains(mockMetadata.creator);
     cy.get('[data-testid="alert"]').should('not.exist');
   });
 
@@ -34,12 +34,6 @@ context('start', () => {
     cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
     cy.visit('');
     cy.get('[data-testid="alert"]').should('exist').contains('URL must contain parameters: recordid and patronid');
-  });
-
-  it('metadata is cleaned up', () => {
-    cy.get('[data-testid="metaData"]').should('not.contain', '$$Q');
-    cy.get('[data-testid="metaData"]').should('not.contain', 'Bjart');
-    cy.get('[data-testid="library-list"]').should('not.contain', 'Pliktavlevering');
   });
 
   it('shows errormessage when metadata-server responds with error', () => {
