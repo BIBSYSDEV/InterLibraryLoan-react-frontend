@@ -54,7 +54,7 @@ export const mockMetadata: MetaData = {
   creation_year: '1984',
   volume: '234',
   pages: '233424',
-  creator: 'Per Bjarne Ytre-Arne, Børre Børresen $$QBjart, Bjarnesen',
+  creator: 'Per Bjarne Ytre-Arne, Børre Børresen',
   isbn: '23423432432',
   publication_place: 'Trondheim',
   publisher: 'Sample publisher',

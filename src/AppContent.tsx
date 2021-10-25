@@ -42,10 +42,6 @@ const AppContent = () => {
   const [appError, setAppError] = useState<Error>();
   const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
 
-  const cleanUpCreators = (creators: string) => {
-    return creators.split('$$Q')[0].trim();
-  };
-
   const cleanUpLibraries = (libraries: Library[]) => {
     return libraries.filter((library) => library.library_code !== BEVLibrary);
   };
@@ -68,7 +64,6 @@ const AppContent = () => {
         setFetchMetaDataError(undefined);
         if (recordId) {
           const response: MetaData = (await getMetadata(recordId)).data;
-          response.creator = cleanUpCreators(response.creator);
           response.libraries = cleanUpLibraries(response.libraries);
           recordId && setMetaData(response);
         }
