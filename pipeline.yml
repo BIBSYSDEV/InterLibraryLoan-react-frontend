@@ -836,10 +836,7 @@ Resources:
       Name: !Sub '${SubDomainNameWithDot}${HostedZoneName}'
       TTL: 900
       Type: CNAME
-6:
-  4:
-    1:
-      1:
+
 Outputs:
   WebsiteBucketName:
     Description: The name of the website bucket
