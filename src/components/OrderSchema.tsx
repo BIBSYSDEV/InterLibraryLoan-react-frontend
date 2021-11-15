@@ -27,7 +27,7 @@ import { postNCIPRequest } from '../api/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Colors } from '../themes/mainTheme';
 import WarningBanner from './WarningBanner';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
@@ -74,7 +74,7 @@ const createSuccessMessage = (metaData: MetaData, selectedLibrary: Library, patr
 const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, ncip_server_url, readonly = false }) => {
   const [isPostingRequest, setIsPostingRequest] = useState(false);
   const [postRequestError, setPostRequestError] = useState<Error>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: SchemaValues) => {
     const selectedLibrary: Library = metaData.libraries.filter((lib) => lib.library_code === values.selectedLibrary)[0];
@@ -99,7 +99,7 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, ncip_server_url
       setIsPostingRequest(true);
       setPostRequestError(undefined);
       await postNCIPRequest(ncipRequest);
-      history.push(
+      navigate(
         `/success?${QueryParameters.message}=${createSuccessMessage(metaData, selectedLibrary, values.patronId)}`
       );
     } catch (error) {
