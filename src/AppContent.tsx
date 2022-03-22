@@ -82,7 +82,7 @@ const AppContent = () => {
   }, [recordId, patronId]);
 
   return (
-    <>
+    <main>
       {appError ? (
         <ErrorBanner error={appError} />
       ) : isLoadingAccess ? (
@@ -117,7 +117,7 @@ const AppContent = () => {
           <CircularProgress />
         </StyledFullPageProgressWrapper>
       )}
-    </>
+    </main>
   );
 };
 
