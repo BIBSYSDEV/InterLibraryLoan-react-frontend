@@ -153,15 +153,17 @@ const OrderSchema: FC<OrderSchemaProps> = ({ metaData, patronId, ncip_server_url
                 {({ field, meta: { error, touched } }: FieldProps) => (
                   <StyledTextFieldWrapper>
                     <TextField
+                      {...field}
+                      id="patron-text-input"
                       required
                       data-testid="patron-field"
                       variant="outlined"
                       label="Recipient"
-                      {...field}
+                      aria-describedby={'patron-helper-text'}
                       error={!!error && touched}
                       helperText={<ErrorMessage name={field.name} />}
                     />
-                    <StyledHelperMessage variant="caption">
+                    <StyledHelperMessage id={'patron-helper-text'} variant="caption">
                       Patron ID for the patron you request on behalf of.
                     </StyledHelperMessage>
                   </StyledTextFieldWrapper>
