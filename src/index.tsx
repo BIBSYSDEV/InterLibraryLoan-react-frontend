@@ -7,14 +7,12 @@ import mainTheme from './themes/mainTheme';
 import { USE_MOCK_DATA } from './utils/constants';
 import { interceptRequestsOnMock } from './api/mock-interceptors';
 import App from './App';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 
-const container = document.getElementById('root');
-if (!container) throw new Error('Failed to find the root element');
 if (USE_MOCK_DATA) {
   interceptRequestsOnMock();
 }
-createRoot(container).render(
+ReactDOM.render(
   <StylesProvider injectFirst>
     <StyledEngineProvider injectFirst>
       <StyledComponentsThemeProvider theme={mainTheme}>
@@ -24,5 +22,6 @@ createRoot(container).render(
         </MuiThemeProvider>
       </StyledComponentsThemeProvider>
     </StyledEngineProvider>
-  </StylesProvider>
+  </StylesProvider>,
+  document.getElementById('root')
 );
