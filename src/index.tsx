@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { StyledEngineProvider, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
@@ -8,11 +7,14 @@ import mainTheme from './themes/mainTheme';
 import { USE_MOCK_DATA } from './utils/constants';
 import { interceptRequestsOnMock } from './api/mock-interceptors';
 import App from './App';
+import { createRoot } from 'react-dom/client';
 
+const container = document.getElementById('root');
+if (!container) throw new Error('Failed to find the root element');
 if (USE_MOCK_DATA) {
   interceptRequestsOnMock();
 }
-ReactDOM.render(
+createRoot(container).render(
   <StylesProvider injectFirst>
     <StyledEngineProvider injectFirst>
       <StyledComponentsThemeProvider theme={mainTheme}>
@@ -22,6 +24,5 @@ ReactDOM.render(
         </MuiThemeProvider>
       </StyledComponentsThemeProvider>
     </StyledEngineProvider>
-  </StylesProvider>,
-  document.getElementById('root')
+  </StylesProvider>
 );
