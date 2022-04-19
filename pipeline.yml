@@ -113,7 +113,6 @@ Conditions:
   IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
 
 Resources:
-
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
     Metadata:
@@ -374,8 +373,8 @@ Resources:
       Source:
         Type: GITHUB
         Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
-#      Triggers:
-#        Webhook: true
+      #      Triggers:
+      #        Webhook: true
       TimeoutInMinutes: 30
       Cache:
         Type: S3

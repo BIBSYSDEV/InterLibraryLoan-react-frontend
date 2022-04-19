@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from 'styled-components';
-import { StylesProvider, ThemeProvider as MUIThemeProvider } from '@material-ui/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
+import { StyledEngineProvider, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { StylesProvider } from '@mui/styles';
 import mainTheme from './themes/mainTheme';
 import { USE_MOCK_DATA } from './utils/constants';
 import { interceptRequestsOnMock } from './api/mock-interceptors';
@@ -13,12 +14,14 @@ if (USE_MOCK_DATA) {
 }
 ReactDOM.render(
   <StylesProvider injectFirst>
-    <ThemeProvider theme={mainTheme}>
-      <MUIThemeProvider theme={mainTheme}>
-        <CssBaseline />
-        <App />
-      </MUIThemeProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <StyledComponentsThemeProvider theme={mainTheme}>
+        <MuiThemeProvider theme={mainTheme}>
+          <CssBaseline />
+          <App />
+        </MuiThemeProvider>
+      </StyledComponentsThemeProvider>
+    </StyledEngineProvider>
   </StylesProvider>,
   document.getElementById('root')
 );
