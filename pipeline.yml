@@ -113,6 +113,7 @@ Conditions:
   IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
 
 Resources:
+
   ArtifactsBucket:
     Type: 'AWS::S3::Bucket'
     Metadata:
@@ -193,10 +194,10 @@ Resources:
                 Resource:
                   - !Sub ${ArtifactsBucket.Arn}
                   - !If [
-                      IsCreateNewBucketCondition,
-                      !GetAtt WebsiteBucket.Arn,
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}',
-                    ]
+                    IsCreateNewBucketCondition,
+                    !GetAtt WebsiteBucket.Arn,
+                    !Sub 'arn:aws:s3:::${ExistingBucketName}',
+                  ]
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -210,10 +211,10 @@ Resources:
                 Resource:
                   - !Sub '${ArtifactsBucket.Arn}/*'
                   - !If [
-                      IsCreateNewBucketCondition,
-                      !Sub '${WebsiteBucket.Arn}/*',
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
-                    ]
+                    IsCreateNewBucketCondition,
+                    !Sub '${WebsiteBucket.Arn}/*',
+                    !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
+                  ]
               - Effect: Allow
                 Action:
                   - cloudformation:DescribeStacks
