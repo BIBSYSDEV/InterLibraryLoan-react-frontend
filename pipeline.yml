@@ -374,8 +374,6 @@ Resources:
       Source:
         Type: GITHUB
         Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
-      #      Triggers:
-      #        Webhook: true
       TimeoutInMinutes: 30
       Cache:
         Type: S3
