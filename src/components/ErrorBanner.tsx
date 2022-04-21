@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Typography } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 
 const StyledAlert = styled(Alert)`
   margin-top: 0.5rem;

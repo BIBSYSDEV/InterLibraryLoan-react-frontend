@@ -1,13 +1,12 @@
 //put custom theme here
 
-import { createTheme } from '@material-ui/core';
+import { createTheme } from '@mui/material';
 
 export enum Colors {
   Primary = 'rgba(99, 34, 107, 1)',
   Secondary = 'rgba(147, 10, 10, 1)',
   Background = '#ffffff',
   SchemaBackground = '#f2f2f2',
-  HoverTextFieldFilled = '#F5F5F5',
   PrimaryText = 'rgb(50,50,50)',
   DisabledText = 'rgb(150,150,150)',
   Warning = 'rgba(147, 10, 10, 1)',
@@ -46,16 +45,20 @@ export default createTheme({
       color: Colors.PrimaryText,
     },
   },
-  overrides: {
+  components: {
     MuiInputBase: {
-      root: {
-        background: Colors.Background,
+      styleOverrides: {
+        root: {
+          background: Colors.Background,
+        },
       },
     },
     MuiRadio: {
-      root: {
-        '&:hover, &:active': {
-          background: Colors.EnhancedRadioFocusBackground,
+      styleOverrides: {
+        root: {
+          '&:hover, &:active': {
+            background: Colors.EnhancedRadioFocusBackground,
+          },
         },
       },
     },

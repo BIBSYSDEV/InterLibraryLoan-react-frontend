@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@mui/material';
 import { QueryParameters } from '../types/app.types';
 
 export const StyledContentWrapper = styled.div`
