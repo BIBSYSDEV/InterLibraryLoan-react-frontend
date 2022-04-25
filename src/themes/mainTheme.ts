@@ -16,7 +16,7 @@ export enum Colors {
 export default createTheme({
   palette: {
     primary: {
-      main: '#ffffff',
+      main: Colors.Primary,
     },
     secondary: {
       main: Colors.Secondary,
