@@ -3,7 +3,7 @@
 import { createTheme } from '@mui/material';
 
 export enum Colors {
-  Primary = 'rgba(1, 1, 107, 1)',
+  Primary = 'rgba(99, 34, 107, 1)',
   Secondary = 'rgba(147, 10, 10, 1)',
   Background = '#ffffff',
   SchemaBackground = '#f2f2f2',
