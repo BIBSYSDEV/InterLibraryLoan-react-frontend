@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@mui/material';
 import { getLibraryAccess, getMetadata } from './api/api';
 import ErrorBanner from './components/ErrorBanner';
 import styled from 'styled-components';

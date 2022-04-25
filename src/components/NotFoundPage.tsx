@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export const StyledContentWrapper = styled.div`
   width: 100%;

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CircularProgress, FormControlLabel, Radio, Typography } from '@material-ui/core';
+import { CircularProgress, FormControlLabel, Radio, Typography } from '@mui/material';
 import { getSRU } from '../api/api';
 import { Library } from '../types/app.types';
 import styled from 'styled-components';
