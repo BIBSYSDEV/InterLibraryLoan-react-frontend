@@ -13,7 +13,7 @@ export const StyledContentWrapper = styled.div`
 const NotFoundPage = () => {
   return (
     <StyledContentWrapper>
-      <Typography variant="h1" data-testId="404">
+      <Typography variant="h1" data-testid="404">
         Got lost? (404-page)
       </Typography>
     </StyledContentWrapper>
