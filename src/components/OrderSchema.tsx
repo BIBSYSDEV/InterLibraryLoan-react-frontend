@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router';
 
 const StyledGridContainer = styled(Grid)`
   margin-top: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 0.5rem;
   background-color: ${Colors.SchemaBackground};
 `;
 
