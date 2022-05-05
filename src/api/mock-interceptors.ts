@@ -11,6 +11,7 @@ import {
   mockLibUserThatTriggersServerError,
   mockLibUserWithoutNCIPAccess,
   mockMetadata,
+  mockMetadataNoInventoryFound,
   mockMMSIdThatTriggersResponseWithNoItems,
   mockMMSIdThatTriggersServerError,
   mockNCIPResponse,
@@ -45,6 +46,11 @@ export const interceptRequestsOnMock = () => {
     `${API_PATHS.metadata}\\?${QueryParameters.documentId}=${mockRecordIdThatTriggersServerError}`,
     500,
     null
+  );
+  mockGetDelayedAndLogged(
+    `${API_PATHS.metadata}\\?${QueryParameters.documentId}=${mockMetadataNoInventoryFound.record_id}`,
+    200,
+    mockMetadataNoInventoryFound
   );
   mockGetDelayedAndLogged(`${API_PATHS.metadata}.*`, 200, mockMetadata);
 

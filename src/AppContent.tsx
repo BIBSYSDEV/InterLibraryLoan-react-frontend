@@ -7,6 +7,7 @@ import { Library, LibraryAccess, MetaData, QueryParameters } from './types/app.t
 import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 import WarningBanner from './components/WarningBanner';
+import NoInventoryFound from './components/NoInventoryFound';
 
 export const StyledFullPageProgressWrapper = styled.div`
   display: flex;
@@ -101,14 +102,16 @@ const AppContent = () => {
                 Use this form to send ILL-request
               </Typography>
               <MetadataHolder metaData={metaData} />
-              {patronId && (
+              {patronId && metaData.libraries.length > 0 && (
                 <OrderSchema
+                  data-testid="order-schema"
                   metaData={metaData}
                   patronId={patronId}
                   ncip_server_url={libraryAccess.ncip_server_url}
                   readonly={libraryAccess.isAlmaLibrary}
                 />
               )}
+              {patronId && metaData.libraries.length === 0 && <NoInventoryFound />}
             </PageWrapper>
           )
         )
