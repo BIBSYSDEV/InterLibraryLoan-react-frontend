@@ -9,7 +9,7 @@ const StyledAlert = styled(Alert)`
 
 const NoInventoryFound = () => {
   return (
-    <StyledAlert data-testid="no-inventory-found" severity="error">
+    <StyledAlert data-testid="no-inventory-found" severity="info">
       <AlertTitle>No library has this document</AlertTitle>
     </StyledAlert>
   );
