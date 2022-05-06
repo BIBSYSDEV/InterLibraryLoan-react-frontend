@@ -112,3 +112,17 @@ export const mockMetadata: MetaData = {
     },
   ],
 };
+
+export const mockMetadataNoInventoryFound: MetaData = {
+  record_id: '85899135',
+  display_title: 'This is a title that no library has',
+  creation_year: '1984',
+  volume: '234',
+  pages: '233424',
+  creator: 'Per Bjarne Ytre-Arne, Børre Børresen',
+  isbn: '23423432432',
+  publication_place: 'Trondheim',
+  publisher: 'Sample publisher',
+  source: 'BIBSYS_ILS - oria.no',
+  libraries: [],
+};
