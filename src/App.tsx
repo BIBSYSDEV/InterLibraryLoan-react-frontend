@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppContent from './AppContent';
 import NotFoundPage from './components/NotFoundPage';
 import SuccessPage from './components/SucessPage';
+import { Box } from '@mui/material';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Box sx={{ height: '2rem' }} />
     </BrowserRouter>
   );
 };

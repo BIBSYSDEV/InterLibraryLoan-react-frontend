@@ -3,6 +3,7 @@ import {
   mockLibUserThatTriggersServerError,
   mockLibUserWithoutNCIPAccess,
   mockMetadata,
+  mockMetadataNoInventoryFound,
   mockRecordIdThatTriggersServerError,
   userIdentifierForNCIPServerError,
 } from '../../src/api/mockdata';
@@ -104,5 +105,11 @@ context('start', () => {
     cy.get(`[data-testid="ncip-request-button"]`).click();
     cy.url().should('include', 'success');
     cy.get('[data-testid="ncip-success-alert"]').should('exist');
+  });
+
+  it('displays an error instead of OrderSchema when no library has the document requested', () => {
+    cy.visit(`?recordid=${mockMetadataNoInventoryFound.record_id}&patronid=123`);
+    cy.get('[data-testid="order-schema"]').should('not.exist');
+    cy.get('[data-testid="no-inventory-found"]').should('contain.text', 'No library has this document');
   });
 });
