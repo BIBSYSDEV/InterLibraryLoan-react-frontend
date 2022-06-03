@@ -35,7 +35,7 @@
     "@types/styled-components": "^5.1.25",
     "@types/yup": "^0.29.14",
     "axios-mock-adapter": "^1.20.0",
-    "cypress": "^9.7.0",
+    "cypress": "^10.0.2",
     "cypress-file-upload": "^5.0.8",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
