@@ -33,7 +33,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
-    "@types/yup": "^0.29.14",
+    "@types/yup": "^0.32.0",
     "axios-mock-adapter": "^1.21.2",
     "cypress": "^10.4.0",
     "cypress-file-upload": "^5.0.8",
