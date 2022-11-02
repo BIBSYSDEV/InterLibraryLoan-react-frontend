@@ -19,6 +19,7 @@ export const StyledFullPageProgressWrapper = styled.div`
   justify-content: center;
 `;
 
+const someConstant = '';
 export const PageWrapper = styled.div`
   padding: 0;
   margin: 1rem;
