@@ -12,16 +12,16 @@
     "start:production": "env-cmd -f ./.env.production npm run-script start"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.4",
+    "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@mui/material": "^5.10.12",
+    "@mui/material": "^5.10.13",
     "axios": "^1.1.3",
     "env-cmd": "^10.1.0",
     "formik": "^2.2.9",
     "react": "^18.1.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.3.0",
-    "react-router-dom": "^6.4.2",
+    "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.6",
     "yup": "^0.32.11"
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
     "@cypress/instrument-cra": "^1.4.0",
-    "@types/react": "^18.0.24",
+    "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
