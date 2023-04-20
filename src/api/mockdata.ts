@@ -1,5 +1,5 @@
 import { LibraryAccess, MetaData, NCIPResponse, SRUResponse } from '../types/app.types';
-import { LIBRARY_CODE_NB_DEP } from '../utils/constants';
+import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED } from '../utils/constants';
 
 export const mockRecordIdThatTriggersServerError = '777';
 
@@ -108,6 +108,20 @@ export const mockMetadata: MetaData = {
       library_code: '0183334',
       available_for_loan: true,
       institution_code: 'UIB',
+      mms_id: '92882766626623',
+    },
+    {
+      display_name: 'Detpotbiblioteket Bevaringssamlingen',
+      library_code: LIBRARY_CODE_BEV,
+      available_for_loan: true,
+      institution_code: 'BEV',
+      mms_id: '92882766626623',
+    },
+    {
+      display_name: 'Statped',
+      library_code: LIBRARY_CODE_STATPED,
+      available_for_loan: true,
+      institution_code: 'Statped',
       mms_id: '92882766626623',
     },
   ],
