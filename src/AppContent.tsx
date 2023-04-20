@@ -8,6 +8,7 @@ import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 import WarningBanner from './components/WarningBanner';
 import NoInventoryFound from './components/NoInventoryFound';
+import { LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED } from './utils/constants';
 
 export const StyledFullPageProgressWrapper = styled.div`
   display: flex;
@@ -29,8 +30,7 @@ export const StyledPageTitleTypography = styled(Typography)`
   width: 100%;
 `;
 
-//Bev = Bevaringssamling at NB. It is possible to order even when they don't have the book available.
-const BEVLibrary = '0183334';
+const excludedLibraries: string[] = [LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED];
 
 const AppContent = () => {
   const query = new URLSearchParams(window.location.search);
@@ -44,7 +44,7 @@ const AppContent = () => {
   const [fetchMetaDataError, setFetchMetaDataError] = useState<Error>();
 
   const cleanUpLibraries = (libraries: Library[]) => {
-    return libraries.filter((library) => library.library_code !== BEVLibrary);
+    return libraries.filter((library) => !excludedLibraries.includes(library.library_code));
   };
 
   useEffect(() => {
