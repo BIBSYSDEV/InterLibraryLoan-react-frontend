@@ -7,7 +7,7 @@ import {
   mockRecordIdThatTriggersServerError,
   userIdentifierForNCIPServerError,
 } from '../../src/api/mockdata';
-import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED } from '../../src/utils/constants';
+import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED_OSLO, LIBRARY_CODE_STATPED_TRH } from '../../src/utils/constants';
 
 context('start', () => {
   beforeEach(() => {
@@ -28,7 +28,8 @@ context('start', () => {
 
   it('does not show BEV library / Statped library even when it is present in the metadata response', () => {
     cy.get(`[data-testid="library-label-${LIBRARY_CODE_BEV}"]`).should('not.exist');
-    cy.get(`[data-testid="library-label-${LIBRARY_CODE_STATPED}"]`).should('not.exist');
+    cy.get(`[data-testid="library-label-${LIBRARY_CODE_STATPED_OSLO}"]`).should('not.exist');
+    cy.get(`[data-testid="library-label-${LIBRARY_CODE_STATPED_TRH}"]`).should('not.exist');
   });
 
   it('shows errormessage when parameters is missing', () => {
