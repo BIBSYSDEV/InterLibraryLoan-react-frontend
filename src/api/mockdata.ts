@@ -1,5 +1,5 @@
 import { LibraryAccess, MetaData, NCIPResponse, SRUResponse } from '../types/app.types';
-import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED } from '../utils/constants';
+import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED_OSLO, LIBRARY_CODE_STATPED_TRH } from '../utils/constants';
 
 export const mockRecordIdThatTriggersServerError = '777';
 
