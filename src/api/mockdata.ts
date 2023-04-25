@@ -1,5 +1,10 @@
 import { LibraryAccess, MetaData, NCIPResponse, SRUResponse } from '../types/app.types';
-import { LIBRARY_CODE_BEV, LIBRARY_CODE_NB_DEP, LIBRARY_CODE_STATPED } from '../utils/constants';
+import {
+  LIBRARY_CODE_BEV,
+  LIBRARY_CODE_NB_DEP,
+  LIBRARY_CODE_STATPED_OSLO,
+  LIBRARY_CODE_STATPED_TRH,
+} from '../utils/constants';
 
 export const mockRecordIdThatTriggersServerError = '777';
 
@@ -118,8 +123,15 @@ export const mockMetadata: MetaData = {
       mms_id: '92882766626623',
     },
     {
-      display_name: 'Statped',
-      library_code: LIBRARY_CODE_STATPED,
+      display_name: 'Statped oslo',
+      library_code: LIBRARY_CODE_STATPED_OSLO,
+      available_for_loan: true,
+      institution_code: 'Statped',
+      mms_id: '92882766626623',
+    },
+    {
+      display_name: 'Statped trondheim',
+      library_code: LIBRARY_CODE_STATPED_TRH,
       available_for_loan: true,
       institution_code: 'Statped',
       mms_id: '92882766626623',

@@ -8,7 +8,7 @@ import MetadataHolder from './components/MetadataPresentation';
 import OrderSchema from './components/OrderSchema';
 import WarningBanner from './components/WarningBanner';
 import NoInventoryFound from './components/NoInventoryFound';
-import { LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED } from './utils/constants';
+import { LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED_OSLO, LIBRARY_CODE_STATPED_TRH } from './utils/constants';
 
 export const StyledFullPageProgressWrapper = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export const StyledPageTitleTypography = styled(Typography)`
   width: 100%;
 `;
 
-const excludedLibraries: string[] = [LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED];
+const excludedLibraries: string[] = [LIBRARY_CODE_BEV, LIBRARY_CODE_STATPED_OSLO, LIBRARY_CODE_STATPED_TRH];
 
 const AppContent = () => {
   const query = new URLSearchParams(window.location.search);
