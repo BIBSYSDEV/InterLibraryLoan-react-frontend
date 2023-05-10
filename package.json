@@ -29,7 +29,7 @@
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.4",
     "@cypress/instrument-cra": "^1.4.0",
-    "@types/react": "^18.2.5",
+    "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.3",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
