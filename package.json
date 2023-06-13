@@ -30,7 +30,7 @@
     "@cypress/code-coverage": "^3.10.7",
     "@cypress/instrument-cra": "^1.4.0",
     "@types/react": "^18.2.11",
-    "@types/react-dom": "^18.2.4",
+    "@types/react-dom": "^18.2.5",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
     "@types/yup": "^0.32.0",
