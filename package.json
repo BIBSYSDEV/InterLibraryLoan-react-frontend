@@ -27,7 +27,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.10.5",
+    "@cypress/code-coverage": "^3.10.7",
     "@cypress/instrument-cra": "^1.4.0",
     "@types/react": "^18.2.11",
     "@types/react-dom": "^18.2.4",
